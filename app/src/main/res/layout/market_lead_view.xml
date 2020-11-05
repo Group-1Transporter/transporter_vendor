@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/background_currentload"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            >
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/location"
+                android:layout_centerVertical="true"
+                android:id="@+id/location"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="indore to bhopal"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:id="@+id/tvfrom"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:weightSum="1"
+            android:layout_gravity="center">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Material Steel(1 ton)"
+                android:textSize="16sp"
+                android:id="@+id/tvmaterial"
+                android:layout_marginLeft="20dp"
+                android:padding="3dp"
+                android:textColor="@color/black"
+
+                />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Weight:       2 ton"
+                android:layout_weight="0.3"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/tvweight"
+                android:textSize="16sp"
+                android:padding="3dp"
+                android:textColor="@color/black"
+                />
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:layout_height="30dp"
+                android:textColor="@color/white"
+                android:text="Bid Now"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="-40dp"
+                android:id="@+id/bidbtn"
+                android:textAllCaps="false"
+                android:background="@drawable/background_btn_bid"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:orientation="horizontal"
+            >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="Username"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"
+            android:padding="5dp"
+            android:id="@+id/username"
+            />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="Last Date: 19-nov-2020"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:padding="5dp"
+                android:id="@+id/lastdate"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
