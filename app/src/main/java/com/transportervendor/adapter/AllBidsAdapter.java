@@ -1,6 +1,7 @@
 package com.transportervendor.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.transportervendor.apis.*;
 import com.transportervendor.beans.Bid;
+import com.transportervendor.beans.BidWithLead;
 import com.transportervendor.beans.Leads;
 import com.transportervendor.databinding.AllBidViewBinding;
 
@@ -22,10 +25,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AllBidsAdapter extends RecyclerView.Adapter<AllBidsAdapter.AllBidsViewHolder> {
-    AllBidViewBinding binding;
     Context context;
-    ArrayList<Bid>al;
-    public AllBidsAdapter(Context context, ArrayList<Bid>al) {
+    ArrayList<BidWithLead>al;
+    public AllBidsAdapter(Context context, ArrayList<BidWithLead>al) {
         this.context=context;
         this.al=al;
     }
@@ -33,37 +35,33 @@ public class AllBidsAdapter extends RecyclerView.Adapter<AllBidsAdapter.AllBidsV
     @NonNull
     @Override
     public AllBidsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        binding=AllBidViewBinding.inflate(LayoutInflater.from(context));
-        View v=binding.getRoot();
-        return new AllBidsViewHolder(v);
+        AllBidViewBinding binding=AllBidViewBinding.inflate(LayoutInflater.from(context));
+        return new AllBidsViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AllBidsViewHolder holder, int position) {
-        Bid bid=al.get(position);
-        LeadsService.LeadsApi leadApi=LeadsService.getLeadsApiInstance();
-        Call<Leads> call=leadApi.getLeads(bid.getLeadId());
-        Leads leads= null;
-        try {
-            leads = call.execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        binding.amount.setText("Amount: "+bid.getAmount());
-        binding.material.setText("Material: "+leads.getTypeOfMaterial());
-        binding.weight.setText("Weight: "+leads.getWeight());
+    public void onBindViewHolder(@NonNull final AllBidsViewHolder holder, int position) {
+        final BidWithLead bid=al.get(position);
+        Leads leads=bid.getLead();
+        holder.binding.material.setText("Material: "+leads.getTypeOfMaterial());
+        holder.binding.weight.setText("Weight: "+leads.getWeight());
         String str[]=leads.getPickUpAddress().split(" ");
         String name=str[str.length-2];
         str=leads.getDeliveryAddress().split(" ");
         name +=" to "+str[str.length-2];
-        binding.location.setText("Location: "+name);
-        if(leads.getStatus().isEmpty()){
-            binding.status.setText("Pending");
-        }else if(leads.getDealLockedWith()=="username"){
-            binding.status.setText("Confirmed");
-        }else{
-            binding.status.setText("Rejected");
+        holder.binding.location.setText("Location: "+name);
+        if(leads.getStatus()!=null) {
+            if (leads.getStatus().equals("")) {
+                holder.binding.status.setText("Pending");
+            } else if (leads.getDealLockedWith().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                holder.binding.status.setText("Confirmed");
+            } else {
+                holder.binding.status.setText("Rejected");
+            }
         }
+        else
+            holder.binding.status.setText("Pending");
+        holder.binding.amount.setText("Amount: "+bid.getBid().getAmount());
     }
 
     @Override
@@ -72,9 +70,10 @@ public class AllBidsAdapter extends RecyclerView.Adapter<AllBidsAdapter.AllBidsV
     }
 
     public class AllBidsViewHolder extends RecyclerView.ViewHolder{
-
-        public AllBidsViewHolder(@NonNull View itemView) {
-            super(itemView);
+        AllBidViewBinding binding;
+        public AllBidsViewHolder(@NonNull AllBidViewBinding binding) {
+            super(binding.getRoot());
+            this.binding=binding;
         }
     }
 }

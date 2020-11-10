@@ -1,7 +1,10 @@
 package com.transportervendor.apis;
 
+import com.transportervendor.beans.BidWithLead;
 import com.transportervendor.beans.Leads;
 import com.transportervendor.beans.Transporter;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -25,11 +28,13 @@ public class LeadsService {
         return leadsApi;
     }
     public interface LeadsApi{
-        @GET("/lead/{leadId}")
-        public Call<Leads> getLeads(@Path("leadId") String leadId);
-        @POST("/transporter")
-        public Call<Transporter> createTransporter(@Body Transporter transporter);
-        @DELETE("/transporter/{id}")
-        public Call<Transporter> deleteTransporter(@Path("id") String id);
+        @GET("/lead/transporter/completed-lead/{id}")
+        public Call<ArrayList<BidWithLead>> getCompletedLeads(@Path("id") String id);
+        @GET("/lead/transporter/current-lead/{id}")
+        public Call<ArrayList<BidWithLead>> getCurrentLeads(@Path("id") String id);
+        @GET("/lead/all-lead")
+        public Call<ArrayList<Leads>> getAllLeads();
+        @GET("/lead/transporter/lead-id/{id}")
+        public Call<ArrayList<String>> getcurrentLeadsId(@Path("id") String transporterId);
     }
 }

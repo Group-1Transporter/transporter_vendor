@@ -1,7 +1,10 @@
 package com.transportervendor.beans;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-public class Leads {
+
+import java.io.Serializable;
+
+public class Leads implements Serializable {
 
 	@SerializedName("userId")
 	@Expose

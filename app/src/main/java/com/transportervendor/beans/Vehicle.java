@@ -2,25 +2,27 @@ package com.transportervendor.beans;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 public class Vehicle {
-	@SerializedName("vehicleId")
+	@SerializedName("vehicelId")
 	@Expose
-	private String vehicleId;
+	private String vehicelId;
 	@SerializedName("name")
 	@Expose
 	private String name;
 	@SerializedName("count")
 	@Expose
 	private String count;
-	@SerializedName("imageUrl")
+	@SerializedName("imgUrl")
 	@Expose
-	private String imageUrl;
+	private String imgUrl;
+
+
 
 	public String getVehicleId() {
-		return vehicleId;
+		return vehicelId;
 	}
 
 	public void setVehicleId(String vehicleId) {
-		this.vehicleId = vehicleId;
+		this.vehicelId = vehicleId;
 	}
 
 	public String getName() {
@@ -40,19 +42,18 @@ public class Vehicle {
 	}
 
 	public String getImageUrl() {
-		return imageUrl;
+		return imgUrl;
 	}
 
 	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+		this.imgUrl = imgUrl;
 	}
 
-	public Vehicle(String vehicleId, String name, String count, String imageUrl) {
-		super();
-		this.vehicleId = vehicleId;
+	public Vehicle(String vehicelId, String name, String count, String imgUrl) {
+		this.vehicelId = vehicelId;
 		this.name = name;
 		this.count = count;
-		this.imageUrl = imageUrl;
+		this.imgUrl = imgUrl;
 	}
 
 	public Vehicle() {

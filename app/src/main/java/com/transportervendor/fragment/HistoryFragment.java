@@ -1,11 +1,13 @@
 package com.transportervendor.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,11 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.transportervendor.NetworkUtil;
 import com.transportervendor.R;
 import com.transportervendor.adapter.AllBidsAdapter;
 import com.transportervendor.adapter.CompletedLeadsAdapter;
 import com.transportervendor.apis.BidService;
+import com.transportervendor.apis.LeadsService;
 import com.transportervendor.beans.Bid;
+import com.transportervendor.beans.BidWithLead;
 import com.transportervendor.beans.Leads;
 import com.transportervendor.databinding.FragmentHistoryBinding;
 
@@ -36,9 +41,25 @@ public class HistoryFragment extends Fragment {
     RecyclerView.Adapter<AllBidsAdapter.AllBidsViewHolder>adapter1;
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragment=FragmentHistoryBinding.inflate(LayoutInflater.from(getContext()));
         View v=fragment.getRoot();
+        LeadsService.LeadsApi leadApi = LeadsService.getLeadsApiInstance();
+        Call<ArrayList<BidWithLead>> call = leadApi.getCompletedLeads(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        call.enqueue(new Callback<ArrayList<BidWithLead>>() {
+            @Override
+            public void onResponse(Call<ArrayList<BidWithLead>> call, Response<ArrayList<BidWithLead>> response) {
+                ArrayList<BidWithLead> al = response.body();
+                adapter = new CompletedLeadsAdapter(getContext(), al);
+                fragment.rv.setAdapter(adapter);
+                fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<BidWithLead>> call, Throwable t) {
+                Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
         return v;
     }
 
@@ -46,38 +67,48 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (fragment.complete.isChecked()){
-            ArrayList<Leads> al = new ArrayList();
-            al.add(new Leads("", "", "Steel (2 ton)", "2 ton", "14 clerkcolony indore mp", "14 nagar bhopal mp", "", "", "19-nov-2020", "", "confirmed", "", "", "10"));
-            al.add(new Leads("", "", "wood ", "2 ton", "14 clerkcolony gwalior mp", "14 nagar agra up", "", "", "19-nov-2020", "", "loaded", "", "", "10"));
-            al.add(new Leads("", "", "home material ", "2 ton", "14 clerkcolony jabalpur mp", "14 nagar ahmedabad gujarat", "", "", "19-nov-2020", "in transit", "", "", "", "10"));
-            al.add(new Leads("", "", "cement ", "2 ton", "14 clerkcolony ahmedabad gujrat", "14 nagar mumbai maharashtra", "", "", "19-nov-2020", "", "reached", "", "", "10"));
-            al.add(new Leads("", "", "medicines ", "2 ton", "14 clerkcolony delhi delhi", "14 nagar itarsi up", "", "", "19-nov-2020", "", "confirmed", "", "", "10"));
-            al.add(new Leads("", "", "petrol ", "2 ton", "14 clerkcolony shimla himachalpradesh", "14 nagar ratlam mp", "", "", "19-nov-2020", "", "loaded", "", "", "10"));
-            al.add(new Leads("", "", "soft drinks ", "2 ton", "14 clerkcolony ujjain mp", "14 nagar dewas mp", "", "", "19-nov-2020", "", "in transit", "", "", "10"));
-            al.add(new Leads("", "", "clothes ", "2 ton", "14 clerkcolony varanasi gujarat", "14 nagar goa goa", "", "", "19-nov-2020", "", "loaded", "", "", "10"));
-            adapter = new CompletedLeadsAdapter(getContext(), al);
-            fragment.rv.setAdapter(adapter);
-        }
-        BidService.BidApi bidApi=BidService.getBidApiInstance();
-        Call<ArrayList<Bid>> call= bidApi.getAllBids(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        ArrayList<Bid> al=new ArrayList<>();
-        try {
-            al= call.execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        adapter1=new AllBidsAdapter(getContext(),al);
-        fragment.complete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b==true){
-                    fragment.rv.setAdapter(adapter);
-                }else{
-                    fragment.rv.setAdapter(adapter1);
+        if (NetworkUtil.getConnectivityStatus(getContext())) {
+          fragment.rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    if(checkedId == R.id.complete){
+                        LeadsService.LeadsApi leadApi = LeadsService.getLeadsApiInstance();
+                        Call<ArrayList<BidWithLead>> call = leadApi.getCompletedLeads(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        call.enqueue(new Callback<ArrayList<BidWithLead>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<BidWithLead>> call, Response<ArrayList<BidWithLead>> response) {
+                                ArrayList<BidWithLead> al = response.body();
+                                adapter = new CompletedLeadsAdapter(getContext(), al);
+                                fragment.rv.setAdapter(adapter);
+                                fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                            }
+
+                            @Override
+                            public void onFailure(Call<ArrayList<BidWithLead>> call, Throwable t) {
+                                Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else if(checkedId == R.id.all){
+                        BidService.BidApi bidApi = BidService.getBidApiInstance();
+                        Call<ArrayList<BidWithLead>> call = bidApi.getAllBids(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        call.enqueue(new Callback<ArrayList<BidWithLead>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<BidWithLead>> call, Response<ArrayList<BidWithLead>> response) {
+                                ArrayList<BidWithLead> al = response.body();
+                                adapter1 = new AllBidsAdapter(getContext(), al);
+                                fragment.rv.setAdapter(adapter1);
+                                fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                            }
+
+                            @Override
+                            public void onFailure(Call<ArrayList<BidWithLead>> call, Throwable t) {
+                                Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

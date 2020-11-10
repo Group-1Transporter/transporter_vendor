@@ -68,15 +68,17 @@
                         android:id="@+id/location"
                         />
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="indore to bhopal"
                         android:textColor="@color/black"
                         android:textSize="20sp"
+                        android:singleLine="true"
                         android:id="@+id/tvfrom"
                         android:textStyle="bold"
+                        android:layout_marginLeft="25dp"
+                        android:textAlignment="center"
                         android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
                         />
 
                 </RelativeLayout>
@@ -224,6 +226,7 @@
                 android:textSize="18sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
+                android:id="@+id/resusername"
                 android:textAlignment="center"
                 android:padding="5dp"
                 />
@@ -250,6 +253,7 @@
                     android:layout_weight="0.5"
                     android:textSize="15sp"
                     android:paddingLeft="8dp"
+                    android:id="@+id/etRate"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
                     android:textColor="@color/black"
@@ -274,6 +278,7 @@
                 android:background="@drawable/background_currentload"
                 android:layout_marginRight="20dp"
                 android:layout_marginLeft="20dp"
+                android:id="@+id/etRemark"
                 android:padding="8dp"
                 />
             <Button
@@ -281,6 +286,7 @@
                 android:layout_height="35dp"
                 android:background="@drawable/background_btn_all_bid"
                 android:text="Bid Now"
+                android:id="@+id/btnbidnow"
                 android:layout_gravity="center"
                 android:textAllCaps="false"
                 android:layout_marginTop="10dp"

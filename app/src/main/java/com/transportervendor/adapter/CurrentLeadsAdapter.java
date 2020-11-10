@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.transportervendor.R;
+import com.transportervendor.beans.BidWithLead;
 import com.transportervendor.beans.Leads;
 import com.transportervendor.databinding.CurrentLoadViewBinding;
 import com.transportervendor.databinding.UpdateStatusViewBinding;
@@ -23,10 +25,10 @@ import com.transportervendor.databinding.UpdateStatusViewBinding;
 import java.util.ArrayList;
 
 public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapter.CurrentLeadsViewHolder> {
-    ArrayList<Leads>al;
+    ArrayList<BidWithLead>al;
     Context context;
 
-    public CurrentLeadsAdapter(Context context,ArrayList<Leads>al){
+    public CurrentLeadsAdapter(Context context,ArrayList<BidWithLead>al){
         this.context=context;
         this.al=al;
     }
@@ -39,7 +41,8 @@ public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final CurrentLeadsViewHolder holder, int position) {
-        final Leads leads=al.get(position);
+        final BidWithLead bidWithLead=al.get(position);
+        final Leads leads=bidWithLead.getLead();
         holder.binding.tvmaterial.setText("Material:"+leads.getTypeOfMaterial());
         String str[]=leads.getPickUpAddress().split(" ");
         String name=str[str.length-2];
@@ -64,6 +67,25 @@ public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapte
                             AlertDialog.Builder ab=new AlertDialog.Builder(context);
                             UpdateStatusViewBinding binding=UpdateStatusViewBinding.inflate(LayoutInflater.from(context));
                             ab.setView(binding.getRoot());
+                            if(!leads.getStatus().equals("confirmed")){
+                                if(leads.getStatus().equalsIgnoreCase("loaded")){
+                                    binding.loaded.setChecked(true);
+                                }else if(leads.getStatus().equalsIgnoreCase("in transit")){
+                                    binding.intransit.setChecked(true);
+                                }else if(leads.getStatus().equalsIgnoreCase("reached")){
+                                    binding.reached.setChecked(true);
+                                }
+                            }else{
+
+                            }
+                            binding.loaded.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                @Override
+                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                    if(isChecked){
+
+                                    }
+                                }
+                            });
                             ab.show();
                         }
                         return false;

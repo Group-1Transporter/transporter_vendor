@@ -1,5 +1,7 @@
 package com.transportervendor.fragment;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +13,25 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.internal.$Gson$Preconditions;
+import com.transportervendor.AddVehicleActivity;
 import com.transportervendor.R;
 import com.transportervendor.adapter.MarketLeadAdapter;
+import com.transportervendor.apis.LeadsService;
 import com.transportervendor.beans.Leads;
+import com.transportervendor.databinding.FilterViewBinding;
 import com.transportervendor.databinding.FragmentMarketBinding;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MarketFragment extends Fragment {
     FragmentMarketBinding fragment;
-    RecyclerView.Adapter<MarketLeadAdapter.MarketLeadViewHolder>adapter;
+    MarketLeadAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,17 +43,50 @@ public class MarketFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        ArrayList<Leads> al=new ArrayList<Leads>();
-        al.add(new Leads("","","Steel (2 ton)","2 ton","14 clerkcolony indore mp","14 nagar bhopal mp","","","19-nov-2020","","confirmed","","","10"));
-        al.add(new Leads("","","wood ","2 ton","14 clerkcolony gwalior mp","14 nagar agra up","","","19-nov-2020","","loaded","","","10"));
-        al.add(new Leads("","","home material ","2 ton","14 clerkcolony jabalpur mp","14 nagar ahmedabad gujarat","","","19-nov-2020","in transit","","","","10"));
-        al.add(new Leads("","","cement ","2 ton","14 clerkcolony ahmedabad gujrat","14 nagar mumbai maharashtra","","","19-nov-2020","","reached","","","10"));
-        al.add(new Leads("","","medicines ","2 ton","14 clerkcolony delhi delhi","14 nagar itarsi up","","","19-nov-2020","","confirmed","","","10"));
-        al.add(new Leads("","","petrol ","2 ton","14 clerkcolony shimla himachalpradesh","14 nagar ratlam mp","","","19-nov-2020","","loaded","","","10"));
-        al.add(new Leads("","","soft drinks ","2 ton","14 clerkcolony ujjain mp","14 nagar dewas mp","","","19-nov-2020","","in transit","","","10"));
-        al.add(new Leads("","","clothes ","2 ton","14 clerkcolony varanasi gujarat","14 nagar goa goa","","","19-nov-2020","","loaded","","","10"));
-        adapter=new MarketLeadAdapter(getContext(),al);
-        fragment.rv.setAdapter(adapter);
+        LeadsService.LeadsApi leadsApi=LeadsService.getLeadsApiInstance();
+        Call<ArrayList<String>>call1=leadsApi.getcurrentLeadsId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Call<ArrayList<Leads>>call2=leadsApi.getAllLeads();
+        call2.enqueue(new Callback<ArrayList<Leads>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Leads>> call, Response<ArrayList<Leads>> response) {
+                ArrayList<Leads>al=response.body();
+                fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                adapter=new MarketLeadAdapter(getContext(),al);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Leads>> call, Throwable t) {
+
+            }
+        });
+        call1.enqueue(new Callback<ArrayList<String>>() {
+            @Override
+            public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
+                ArrayList<String>al=response.body();
+                adapter.setLid(al);
+                fragment.rv.setAdapter(adapter);
+                fragment.txt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in=new Intent(getContext(), AddVehicleActivity.class);
+                        startActivity(in);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<String>> call, Throwable t) {
+
+            }
+        });
+        fragment.filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder ab=new AlertDialog.Builder(getContext());
+                FilterViewBinding binding=FilterViewBinding.inflate(LayoutInflater.from(getContext()));
+                ab.setView(binding.getRoot());
+                ab.show();
+            }
+        });
     }
 }

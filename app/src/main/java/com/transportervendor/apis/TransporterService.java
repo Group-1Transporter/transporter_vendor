@@ -28,9 +28,6 @@ public class TransporterService {
     public interface TransporterApi{
         @GET("/transporter/{id}")
         public Call<Transporter> getTransporter(@Path("id") String id);
-        @POST("/transporter")
-        public Call<Transporter> createTransporter(@Body Transporter transporter);
-        @DELETE("/transporter/{id}")
-        public Call<Transporter> deleteTransporter(@Path("id") String id);
+
     }
 }

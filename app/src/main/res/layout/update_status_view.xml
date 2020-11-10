@@ -10,40 +10,44 @@
         android:background="@drawable/background_bid_now"
         android:paddingBottom="10dp"
         >
-    <CheckBox
+    <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="loaded"
-        android:layout_marginLeft="100dp"
+        android:layoutDirection="rtl"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="20dp"
         android:id="@+id/loaded"
         android:textSize="20sp"
         />
-    <CheckBox
+    <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layoutDirection="rtl"
         android:layout_centerInParent="true"
         android:layout_below="@id/loaded"
         android:id="@+id/intransit"
         android:text="in transit"
         android:textSize="20sp"
         />
-    <CheckBox
+    <RadioButton
         android:layout_width="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:id="@+id/reached"
+        android:layoutDirection="rtl"
         android:text="Reached"
         android:textSize="20sp"
         android:layout_below="@id/intransit"
         />
-    <CheckBox
+    <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layoutDirection="rtl"
         android:text="delivered"
         android:layout_below="@id/reached"
         android:layout_centerInParent="true"
