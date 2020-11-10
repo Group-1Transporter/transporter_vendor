@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="@drawable/background_bid_now"
+    android:layout_height="match_parent"
+    >
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end"
+        android:id="@+id/rg"
+        >
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:id="@+id/arp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:textColorHint="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="Arunachal Pradesh"/>
+       <RadioButton
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layoutDirection="rtl"
+           android:id="@+id/mp"
+           android:layout_marginRight="20dp"
+           android:layout_marginTop="10dp"
+           android:textColorHint="@color/colorPrimary"
+           android:textColor="@color/white"
+           android:text="Madhya Pradesh"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:id="@+id/up"
+            android:layoutDirection="rtl"
+            android:textColorHint="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:text="Uttar Pradesh"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/bihar"
+            android:layoutDirection="rtl"
+            android:textColorHint="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="Bihar"/>
+    </RadioGroup>
+</LinearLayout>
+</ScrollView>

@@ -4,7 +4,9 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
-
+    buildFeatures{
+        viewBinding=true
+    }
 
     defaultConfig {
         applicationId "com.transportervendor"

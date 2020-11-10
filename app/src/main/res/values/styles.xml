@@ -7,4 +7,12 @@
         <item name="colorAccent">#03A9F4</item>
     </style>
 
+    <style name="SignUpTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#0391D1</item>
+        <item name="colorPrimaryDark">#056F9F</item>
+        <item name="colorAccent">#03A9F4</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
 </resources>
