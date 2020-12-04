@@ -1,6 +1,7 @@
 package com.transportervendor.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.transportervendor.BidInfoActivity;
+import com.transportervendor.BidNowActivity;
 import com.transportervendor.apis.*;
 import com.transportervendor.beans.Bid;
 import com.transportervendor.beans.BidWithLead;
@@ -45,9 +48,9 @@ public class AllBidsAdapter extends RecyclerView.Adapter<AllBidsAdapter.AllBidsV
         Leads leads=bid.getLead();
         holder.binding.material.setText("Material: "+leads.getTypeOfMaterial());
         holder.binding.weight.setText("Weight: "+leads.getWeight());
-        String str[]=leads.getPickUpAddress().split(" ");
+        String str[]=leads.getPickUpAddress().split(",");
         String name=str[str.length-2];
-        str=leads.getDeliveryAddress().split(" ");
+        str=leads.getDeliveryAddress().split(",");
         name +=" to "+str[str.length-2];
         holder.binding.location.setText("Location: "+name);
         if(leads.getStatus()!=null) {
@@ -62,6 +65,20 @@ public class AllBidsAdapter extends RecyclerView.Adapter<AllBidsAdapter.AllBidsV
         else
             holder.binding.status.setText("Pending");
         holder.binding.amount.setText("Amount: "+bid.getBid().getAmount());
+        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bid.getLead().getStatus().equals("") || (bid.getLead().getDealLockedWith().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) && bid.getLead().getStatus().equalsIgnoreCase("confirmed"))){
+                    Intent in = new Intent(context, BidInfoActivity.class);
+                    in.putExtra("leads", bid);
+                    context.startActivity(in);
+                }else if (bid.getLead().getDealLockedWith().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) && (!bid.getLead().getStatus().equalsIgnoreCase("confirmed"))){
+                    Toast.makeText(context, "you can't edit this bid.", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "this bid is rejected.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

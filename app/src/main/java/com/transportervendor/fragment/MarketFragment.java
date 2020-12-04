@@ -1,26 +1,30 @@
 package com.transportervendor.fragment;
 
 import android.app.AlertDialog;
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.gson.internal.$Gson$Preconditions;
-import com.transportervendor.AddVehicleActivity;
-import com.transportervendor.R;
+import com.transportervendor.BidInfoActivity;
+import com.transportervendor.CustomProgressDialog;
+import com.transportervendor.Filter;
+import com.transportervendor.FilterAdapter;
+import com.transportervendor.NetworkUtil;
 import com.transportervendor.adapter.MarketLeadAdapter;
 import com.transportervendor.apis.LeadsService;
+import com.transportervendor.apis.StateService;
 import com.transportervendor.beans.Leads;
-import com.transportervendor.databinding.FilterViewBinding;
+import com.transportervendor.beans.State;
+import com.transportervendor.databinding.DialogViewBinding;
 import com.transportervendor.databinding.FragmentMarketBinding;
 
 import java.util.ArrayList;
@@ -32,61 +36,170 @@ import retrofit2.Response;
 public class MarketFragment extends Fragment {
     FragmentMarketBinding fragment;
     MarketLeadAdapter adapter;
+    ArrayList<String> lid;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragment=FragmentMarketBinding.inflate(LayoutInflater.from(getContext()));
-        View v=fragment.getRoot();
+        fragment = FragmentMarketBinding.inflate(LayoutInflater.from(getContext()));
+        View v = fragment.getRoot();
         return v;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        LeadsService.LeadsApi leadsApi=LeadsService.getLeadsApiInstance();
-        Call<ArrayList<String>>call1=leadsApi.getcurrentLeadsId(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        Call<ArrayList<Leads>>call2=leadsApi.getAllLeads();
-        call2.enqueue(new Callback<ArrayList<Leads>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Leads>> call, Response<ArrayList<Leads>> response) {
-                ArrayList<Leads>al=response.body();
-                fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-                adapter=new MarketLeadAdapter(getContext(),al);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Leads>> call, Throwable t) {
-
-            }
-        });
-        call1.enqueue(new Callback<ArrayList<String>>() {
-            @Override
-            public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
-                ArrayList<String>al=response.body();
-                adapter.setLid(al);
-                fragment.rv.setAdapter(adapter);
-                fragment.txt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent in=new Intent(getContext(), AddVehicleActivity.class);
-                        startActivity(in);
+        adapter = new MarketLeadAdapter(getContext(), new ArrayList<Leads>());
+        final LeadsService.LeadsApi leadsApi = LeadsService.getLeadsApiInstance();
+        Call<ArrayList<String>> call1 = leadsApi.getcurrentLeadsId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        final Call<ArrayList<Leads>> call2 = leadsApi.getAllLeads();
+        if (NetworkUtil.getConnectivityStatus(getContext())) {
+            final CustomProgressDialog pd=new CustomProgressDialog(getContext(),"Please wait...");
+            pd.show();
+            call2.enqueue(new Callback<ArrayList<Leads>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Leads>> call, Response<ArrayList<Leads>> response) {
+                    pd.dismiss();
+                    if (response.code() == 200) {
+                        ArrayList<Leads> al = response.body();
+                        fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                        adapter = new MarketLeadAdapter(getContext(), al);
+                        fragment.rv.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }
-                });
-            }
+                }
 
-            @Override
-            public void onFailure(Call<ArrayList<String>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ArrayList<Leads>> call, Throwable t) {
+                    pd.dismiss();
+                    Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            pd.show();
+            call1.enqueue(new Callback<ArrayList<String>>() {
+                @Override
+                public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
+                    pd.dismiss();
+                    if (response.code() == 200) {
+                        lid = response.body();
+                        if (lid == null)
+                            lid = new ArrayList<>();
+                        adapter.setLid(lid);
+                        adapter.notifyDataSetChanged();
+                        fragment.rv.setAdapter(adapter);
+                    }
+                }
 
-            }
-        });
-        fragment.filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder ab=new AlertDialog.Builder(getContext());
-                FilterViewBinding binding=FilterViewBinding.inflate(LayoutInflater.from(getContext()));
-                ab.setView(binding.getRoot());
-                ab.show();
-            }
-        });
+                @Override
+                public void onFailure(Call<ArrayList<String>> call, Throwable t) {
+                    pd.dismiss();
+                    Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            fragment.filter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final DialogViewBinding alb = DialogViewBinding.inflate(LayoutInflater.from(getContext()));
+                    StateService.StateApi stateApi = StateService.getStateApiInstance();
+                    Call<ArrayList<State>> call = stateApi.getState();
+                    alb.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                    if (NetworkUtil.getConnectivityStatus(getContext())) {
+                        pd.show();
+                        call.enqueue(new Callback<ArrayList<State>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<State>> call, Response<ArrayList<State>> response) {
+                                pd.dismiss();
+                                if (response.isSuccessful()) {
+                                    ArrayList<State>al=response.body();
+                                    FilterAdapter adapter = new FilterAdapter(getContext(),al);
+                                    alb.rv.setAdapter(adapter);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ArrayList<State>> call, Throwable t) {
+                                pd.dismiss();
+                                Toast.makeText(getContext(), ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getContext(), "Please enable internet connection.", Toast.LENGTH_SHORT).show();
+                    }
+                    final AlertDialog ab = new AlertDialog.Builder(getContext()).create();
+                    ab.setView(alb.getRoot());
+                    alb.btncancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ab.dismiss();
+                        }
+                    });
+                    alb.btnupdate.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!(alb.all.isChecked())) {
+                                LeadsService.LeadsApi leadsApi1 = LeadsService.getLeadsApiInstance();
+                                Call<ArrayList<Leads>> call = leadsApi1.getfilteredLeads(Filter.getInstance());
+                                if (NetworkUtil.getConnectivityStatus(getContext())) {
+                                    final CustomProgressDialog pd=new CustomProgressDialog(getContext(),"Please wait...");
+                                    pd.show();
+                                    call.enqueue(new Callback<ArrayList<Leads>>() {
+                                        @Override
+                                        public void onResponse(Call<ArrayList<Leads>> call, Response<ArrayList<Leads>> response) {
+                                            pd.dismiss();
+                                            if (response.isSuccessful()) {
+                                                adapter = new MarketLeadAdapter(getContext(), response.body());
+                                                adapter.setLid(lid);
+                                                fragment.rv.setAdapter(adapter);
+                                                adapter.notifyDataSetChanged();
+                                                ab.dismiss();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ArrayList<Leads>> call, Throwable t) {
+                                            pd.dismiss();
+                                            Toast.makeText(getContext(), ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else
+                                    Toast.makeText(getContext(), "Please enable internet connection.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                LeadsService.LeadsApi leadsApi1=LeadsService.getLeadsApiInstance();
+                                Call<ArrayList<Leads>>call5=leadsApi1.getAllLeads();
+                                if(NetworkUtil.getConnectivityStatus(getContext())) {
+                                    final CustomProgressDialog pd=new CustomProgressDialog(getContext(),"Please wait...");
+                                    pd.show();
+                                    call5.enqueue(new Callback<ArrayList<Leads>>() {
+                                        @Override
+                                        public void onResponse(Call<ArrayList<Leads>> call, Response<ArrayList<Leads>> response) {
+                                            pd.dismiss();
+                                            if (response.code() == 200) {
+                                                ArrayList<Leads> al = response.body();
+                                                fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                                                adapter = new MarketLeadAdapter(getContext(), al);
+                                                fragment.rv.setAdapter(adapter);
+                                                adapter.notifyDataSetChanged();
+                                                ab.dismiss();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ArrayList<Leads>> call, Throwable t) {
+                                            pd.dismiss();
+                                            Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }else{
+                                    Toast.makeText(getContext(), "please enable internet connection.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+
+                    ab.show();
+                }
+            });
+        } else
+            Toast.makeText(getContext(), "Please enable internet connection.", Toast.LENGTH_SHORT).show();
     }
 }
