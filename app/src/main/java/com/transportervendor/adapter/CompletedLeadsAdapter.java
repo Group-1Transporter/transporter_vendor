@@ -35,9 +35,9 @@ public class CompletedLeadsAdapter extends RecyclerView.Adapter<CompletedLeadsAd
     public void onBindViewHolder(@NonNull CompletedLeadsAdapter.CompletedLeadsViewHolder holder, int position) {
         BidWithLead bidWithLead=al.get(position);
         Leads leads=bidWithLead.getLead();
-        String str[]=leads.getPickUpAddress().split(" ");
+        String str[]=leads.getPickUpAddress().split(",");
         String name=str[str.length-2];
-        str=leads.getDeliveryAddress().split(" ");
+        str=leads.getDeliveryAddress().split(",");
         name +=" to "+str[str.length-2];
         holder.binding.location.setText("Location: "+name);
         holder.binding.material.setText("Material: "+leads.getTypeOfMaterial());

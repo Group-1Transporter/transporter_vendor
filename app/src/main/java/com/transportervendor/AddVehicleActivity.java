@@ -1,7 +1,10 @@
 package com.transportervendor;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -22,9 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.transportervendor.apis.VehicleService;
+import com.transportervendor.beans.Transporter;
 import com.transportervendor.beans.Vehicle;
 import com.transportervendor.databinding.AddVehicleActivityBinding;
 
@@ -52,17 +57,14 @@ public class AddVehicleActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==222 && resultCode==RESULT_OK){
-            imgUri=data.getData();
+        if (requestCode == 111) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    imgUri=data.getData();
+                    binding.ivVehicleImage.setImageURI(imgUri);
+                }
+            }
         }
-//        if (requestCode==CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data!=null ) {
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                imgUri = result.getUri();
-//                binding.ivVehicleImage.setImageURI(imgUri);
-//
-//            }
-//        }
     }
 
     @Override
@@ -74,17 +76,11 @@ public class AddVehicleActivity extends AppCompatActivity {
                 if(ActivityCompat.checkSelfPermission(AddVehicleActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PermissionChecker.PERMISSION_GRANTED){
                    ActivityCompat.requestPermissions(AddVehicleActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},111);
                 }
-                else {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(intent, 222);
-                }
-//
-//                CropImage.activity()
-//                        .setGuidelines(CropImageView.Guidelines.ON)
-//                        .setAspectRatio(1,1)
-//                        .start(AddVehicleActivity.this);
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"),111);
             }
         });
         binding.btnDone.setOnClickListener(new View.OnClickListener() {
@@ -116,13 +112,22 @@ public class AddVehicleActivity extends AppCompatActivity {
                         RequestBody transporterId=RequestBody.create(okhttp3.MultipartBody.FORM, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                         VehicleService.VehicleApi vehicleApi=VehicleService.getVehicleApiInstance();
-                        Call<Vehicle>call=vehicleApi.createVehicle(name,count,transporterId,body);
-                        call.enqueue(new Callback<Vehicle>() {
+                        Call<Transporter>call=vehicleApi.createVehicle(name,count,transporterId,body);
+                        final CustomProgressDialog pd=new CustomProgressDialog(AddVehicleActivity.this,"Please wait...");
+                        pd.show();
+                        call.enqueue(new Callback<Transporter>() {
                             @Override
-                            public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
-                                Log.e("inside response","dfddfddf");
-                                Log.e("spanshoe",""+response.body());
-                                if (!response.body().getVehicleId().isEmpty()){
+                            public void onResponse(Call<Transporter> call, Response<Transporter> response) {
+                                pd.dismiss();
+                                if (response.code()==200){
+                                    Transporter t=response.body();
+                                    SharedPreferences mPrefs = getSharedPreferences("Transporter",MODE_PRIVATE);
+                                    SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                                    Gson gson = new Gson();
+                                    String json = gson.toJson(t);
+                                    Log.e("spanshoe",""+json);
+                                    prefsEditor.putString("Transporter", json);
+                                    prefsEditor.commit();
                                     Intent in=new Intent();
                                     setResult(222,in);
                                     finish();
@@ -130,9 +135,9 @@ public class AddVehicleActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<Vehicle> call, Throwable t) {
+                            public void onFailure(Call<Transporter> call, Throwable t) {
+                                pd.dismiss();
                                 Toast.makeText(AddVehicleActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
-                                Log.e("spanshoe",""+t.getMessage());
                             }
                         });
                     } else

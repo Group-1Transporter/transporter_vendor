@@ -22,7 +22,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(binding.getRoot());
         if(!NetworkUtil.getConnectivityStatus(this))
             Toast.makeText(this, "Please enable internet connection", Toast.LENGTH_SHORT).show();
-        Handler handler = new Handler();
+            Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {

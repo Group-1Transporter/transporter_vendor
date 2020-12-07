@@ -12,20 +12,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Leads"
-            android:textSize="20sp"
-            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold"
-            android:padding="10dp"
+            android:padding="3dp"
             android:id="@+id/txt"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             />
         <ImageView
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
             android:id="@+id/filter"
-            android:src="@drawable/ic_filter_solid"
-            android:layout_marginLeft="60dp"
+            android:src="@drawable/ic_baseline_filter_list_24"
+            android:layout_marginLeft="80dp"
             />
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView

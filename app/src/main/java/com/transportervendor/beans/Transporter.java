@@ -16,9 +16,9 @@ public class Transporter {
 	@SerializedName("type")
 	@Expose
 	private String type;
-	@SerializedName("image")
+	@SerializedName("imageUrl")
 	@Expose
-	private String image;
+	private String imageUrl;
 	@SerializedName("contactNumber")
 	@Expose
 	private String contactNumber;
@@ -38,21 +38,34 @@ public class Transporter {
 	@Expose
 	private String token;
 
+	@SerializedName("vehicleList")
+	@Expose
+	private ArrayList<Vehicle> vehicleList;
+
 
 	public Transporter() {
 	}
-	public Transporter(String name, String transporterId, String type, String image, String contactNumber, String address, String aadharCardNumber, String gstNo, String rating, String token) {
-		super();
+
+	public Transporter(String name, String transporterId, String type, String imageUrl, String contactNumber, String address, String aadharCardNumber, String gstNo, String rating, String token, ArrayList<Vehicle> vehicleList) {
 		this.name = name;
 		this.transporterId = transporterId;
 		this.type = type;
-		this.image = image;
+		this.imageUrl = imageUrl;
 		this.contactNumber = contactNumber;
 		this.address = address;
 		this.aadharCardNumber = aadharCardNumber;
 		this.gstNo = gstNo;
 		this.rating = rating;
 		this.token = token;
+		this.vehicleList = vehicleList;
+	}
+
+	public ArrayList<Vehicle> getVehicleList() {
+		return vehicleList;
+	}
+
+	public void setVehicleList(ArrayList<Vehicle> vehicleList) {
+		this.vehicleList = vehicleList;
 	}
 
 	public String getName() {
@@ -80,11 +93,11 @@ public class Transporter {
 	}
 
 	public String getImage() {
-		return image;
+		return imageUrl;
 	}
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setImage(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public String getContactNumber() {

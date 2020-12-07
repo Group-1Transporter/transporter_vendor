@@ -39,5 +39,7 @@ public class BidService {
         public Call<ArrayList<BidWithLead>> getAllBids(@Path("id") String id);
         @POST("/bid/")
         public Call<Bid> createBid(@Body Bid bid);
+        @POST("/bid/update")
+        public Call<Bid> updateBid(@Body Bid bid);
     }
 }

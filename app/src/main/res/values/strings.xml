@@ -20,4 +20,10 @@
     <string name="error_selecting_file">Error selecting File</string>
 
     <string name="internal_storage">Internal storage</string>
+    <string-array name="type">
+        <item>Choose Category</item>
+        <item>Truck Owner</item>
+        <item>Transport Company</item>
+        <item>Packers and Movers</item>
+    </string-array>
 </resources>

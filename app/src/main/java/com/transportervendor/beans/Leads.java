@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Leads implements Serializable {
-
 	@SerializedName("userId")
 	@Expose
 	private String userId;

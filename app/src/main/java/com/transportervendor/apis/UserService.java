@@ -10,7 +10,7 @@ import retrofit2.http.Path;
 
 public class UserService {
     public static UserService.UserApi userApi=null;
-    public static UserService.UserApi getLeadsApiInstance(){
+    public static UserService.UserApi getUserApiInstance(){
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(ServerAddress.serverAddress)
                 .addConverterFactory(GsonConverterFactory.create())

@@ -3,7 +3,9 @@ package com.transportervendor.beans;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BidWithLead {
+import java.io.Serializable;
+
+public class BidWithLead implements Serializable {
     private Bid bid;
 
     private Leads leads;

@@ -2,6 +2,7 @@ package com.transportervendor.apis;
 
 import com.transportervendor.beans.BidWithLead;
 import com.transportervendor.beans.Leads;
+import com.transportervendor.beans.State;
 import com.transportervendor.beans.Transporter;
 
 import java.util.ArrayList;
@@ -30,11 +31,21 @@ public class LeadsService {
     public interface LeadsApi{
         @GET("/lead/transporter/completed-lead/{id}")
         public Call<ArrayList<BidWithLead>> getCompletedLeads(@Path("id") String id);
+
         @GET("/lead/transporter/current-lead/{id}")
         public Call<ArrayList<BidWithLead>> getCurrentLeads(@Path("id") String id);
+
         @GET("/lead/all-lead")
         public Call<ArrayList<Leads>> getAllLeads();
+
         @GET("/lead/transporter/lead-id/{id}")
         public Call<ArrayList<String>> getcurrentLeadsId(@Path("id") String transporterId);
+
+
+        @POST("/lead/update")
+        public Call<Leads> updateLeads(@Body Leads leads);
+
+        @POST("/lead/transporter/current-lead/filter/")
+        public Call<ArrayList<Leads>> getfilteredLeads(@Body ArrayList<String>al);
     }
 }
