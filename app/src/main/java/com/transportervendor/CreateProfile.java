@@ -85,12 +85,27 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
                 Picasso.get().load(transporter.getImage()).placeholder(R.drawable.transporter_logo).into(binding.civ);
             }else
                 Toast.makeText(this, "please enable internet connection.", Toast.LENGTH_SHORT).show();
-            if(transporter.getType().equalsIgnoreCase("Truck Owner"))
-                binding.sp.setSelection(1);
-            else if(transporter.getType().equalsIgnoreCase("Transport Company"))
-                binding.sp.setSelection(2);
-            else if(transporter.getType().equalsIgnoreCase("Packers and Movers"))
-                binding.sp.setSelection(3);
+            ArrayList<String>a=new ArrayList<>();
+            a.add("Truck Owner");
+            a.add("Transport Company");
+            a.add("Packers and movers");
+            final ArrayAdapter<String> ad =new ArrayAdapter<>(CreateProfile.this,android.R.layout.simple_spinner_item,a);
+            ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.sp.setAdapter(ad);
+            binding.sp.setOnItemSelectedListener(this);
+            if(transporter.getType().equalsIgnoreCase("Truck Owner")) {
+                a.set(0, "Truck Owner");
+                binding.aadhar.setVisibility(View.VISIBLE);
+            }
+            else if(transporter.getType().equalsIgnoreCase("Transport Company")) {
+                a.set(0, "Transport Company");
+                binding.gst.setVisibility(View.VISIBLE);
+            }
+            else if(transporter.getType().equalsIgnoreCase("Packers and Movers")) {
+                a.set(0, "Packers and Movers");
+                binding.gst.setVisibility(View.VISIBLE);
+            }
+            ad.notifyDataSetChanged();
             binding.etname.setText(transporter.getName());
             binding.address.setText(transporter.getAddress());
             al=transporter.getVehicleList();
@@ -109,10 +124,12 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 111);
             }
         });
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.sp.setAdapter(adapter);
-        binding.sp.setOnItemSelectedListener(this);
+        if(code!=2) {
+            final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.sp.setAdapter(adapter);
+            binding.sp.setOnItemSelectedListener(this);
+        }
         binding.create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
