@@ -60,11 +60,12 @@ public class BidNowActivity extends AppCompatActivity {
                     pd.dismiss();
                     if (response.code() == 200) {
                         final User user = response.body();
+                        Log.e("spanshoe","token"+user.getToken());
                         binding.username.setText("Username: " + user.getName());
                         binding.resusername.setText("Send Response to " + user.getName());
-                        String str[] = leads.getPickUpAddress().split(" ");
+                        String str[] = leads.getPickUpAddress().split(",");
                         String name = str[str.length - 2];
-                        str = leads.getDeliveryAddress().split(" ");
+                        str = leads.getDeliveryAddress().split(",");
                         name += " to " + str[str.length - 2];
                         binding.tvfrom.setText(name);
                         binding.tvmaterial.setText("Material: " + leads.getTypeOfMaterial());
@@ -87,7 +88,11 @@ public class BidNowActivity extends AppCompatActivity {
                                     binding.etRemark.setError("this field can't be empty.");
                                     return;
                                 }
-                                final Bid bid = new Bid("", leads.getLeadId(), FirebaseAuth.getInstance().getCurrentUser().getUid(), "", rate, remark, leads.getDateOfCompletion());
+                                SharedPreferences shared = getSharedPreferences("Transporter", Context.MODE_PRIVATE);
+                                String json=shared.getString("Transporter","");
+                                Gson gson=new Gson();
+                                Transporter transporter=gson.fromJson(json,Transporter.class);
+                                final Bid bid = new Bid("", leads.getLeadId(), FirebaseAuth.getInstance().getCurrentUser().getUid(), transporter.getName(), rate, remark, leads.getDateOfCompletion());
                                 BidService.BidApi bidApi = BidService.getBidApiInstance();
                                 Call<Bid> call = bidApi.createBid(bid);
                                 if (NetworkUtil.getConnectivityStatus(BidNowActivity.this)) {
@@ -113,10 +118,12 @@ public class BidNowActivity extends AppCompatActivity {
                                                 JsonObjectRequest request = new JsonObjectRequest(url, notification_data, new com.android.volley.Response.Listener<JSONObject>() {
                                                     @Override
                                                     public void onResponse(JSONObject response) {
+                                                        Log.e("spanshoe","response");
                                                     }
                                                 }, new com.android.volley.Response.ErrorListener() {
                                                     @Override
                                                     public void onErrorResponse(VolleyError error) {
+                                                        Log.e("spanshoe","error..."+error.getMessage());
                                                         Toast.makeText(BidNowActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                                                     }
                                                 }) {
