@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
@@ -41,27 +42,42 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivVehicleImage"
+        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="2dp"
         android:layout_width="match_parent"
         android:layout_gravity="center"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_marginTop="20dp"
         android:src="@drawable/transporter_logo" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:background="@drawable/edittext_decorator"
-        android:inputType="text"
-        android:id="@+id/etcategory"
-        android:padding="7dp"
-        android:textColorHint="@color/black"
-        android:hint="Vehicle catergory"
-        android:textSize="17sp"
-        android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/edittext_decorator"
+            android:layout_height="wrap_content">
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sp"
+                />
+        </LinearLayout>
+<!--    <EditText-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginLeft="30dp"-->
+<!--        android:layout_marginRight="30dp"-->
+<!--        android:background="@drawable/edittext_decorator"-->
+<!--        android:inputType="text"-->
+<!--        android:id="@+id/etcategory"-->
+<!--        android:padding="7dp"-->
+<!--        android:textColorHint="@color/black"-->
+<!--        android:hint="Vehicle catergory"-->
+<!--        android:textSize="17sp"-->
+<!--        android:textStyle="bold" />-->
 
     <EditText
         android:layout_width="match_parent"
@@ -70,14 +86,15 @@
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
         android:background="@drawable/edittext_decorator"
-        android:padding="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="20dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:inputType="number"
         android:hint="Vehicle count"
-        android:textColorHint="@color/black"
-        android:textSize="17sp"
-        android:textStyle="bold" />
+        android:textSize="16sp"
+        />
 
     <Button
         android:id="@+id/btnDone"
@@ -86,7 +103,6 @@
         android:layout_marginTop="40dp"
         android:layout_gravity="center"
         android:background="@drawable/button_decorator"
-        android:backgroundTint="#C63131"
         android:gravity="center"
         android:padding="10dp"
         android:text="Add Vehicle"

@@ -1,10 +1,12 @@
 package com.transportervendor;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -40,6 +43,7 @@ import retrofit2.Response;
 
 public class CreateProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     CreateProfileBinding binding;
+    public static final Integer RecordAudioRequestCode = 1;
     String imgUrl="";
     ArrayList<Vehicle>al=new ArrayList<>();
     Uri imgUri;
@@ -52,27 +56,25 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setTitle("Create Profile");
         Intent in=getIntent();
+        checkPermission();
         code=in.getIntExtra("code",0);
         setContentView(binding.getRoot());
-        binding.cd1.setVisibility(View.GONE);
-        binding.cd2.setVisibility(View.GONE);
-        binding.cd3.setVisibility(View.GONE);
         binding.pending.setVisibility(View.GONE);
         binding.completed.setVisibility(View.GONE);
         binding.total.setVisibility(View.GONE);
         if(code==2){
             SharedPreferences mPrefs = getSharedPreferences("Transporter",MODE_PRIVATE);
+            getSupportActionBar().setTitle("Update Profile");
             String json=mPrefs.getString("Transporter","");
             Gson gson = new Gson();
             String completed=mPrefs.getString("completed","");
             String pending=mPrefs.getString("pending","");
             Transporter transporter=gson.fromJson(json,Transporter.class);
+            binding.pp.setText(transporter.getName());
             if(!(pending.equals("")) && !(pending.equals("")) ) {
                 int p = Integer.parseInt(pending);
                 int c = Integer.parseInt(completed);
                 binding.cd1.setVisibility(View.VISIBLE);
-                binding.cd2.setVisibility(View.VISIBLE);
-                binding.cd3.setVisibility(View.VISIBLE);
                 binding.pending.setVisibility(View.VISIBLE);
                 binding.completed.setVisibility(View.VISIBLE);
                 binding.total.setVisibility(View.VISIBLE);
@@ -201,6 +203,7 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
                             @Override
                             public void onResponse(Call<Transporter> call, Response<Transporter> response) {
                                 pd.dismiss();
+                                Log.e("spanshoe","..........."+response.code());
                                 if (response.code() == 200) {
                                     Toast.makeText(CreateProfile.this, "profile created", Toast.LENGTH_SHORT).show();
                                     SharedPreferences mPrefs = getSharedPreferences("Transporter", MODE_PRIVATE);
@@ -220,6 +223,7 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
                             @Override
                             public void onFailure(Call<Transporter> call, Throwable t) {
                                 pd.dismiss();
+                                Log.e("spanshoe",""+t.getMessage());
                                 Toast.makeText(CreateProfile.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -325,7 +329,13 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
             binding.aadhar.setVisibility(View.GONE);
         }
     }
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RecordAudioRequestCode);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RecordAudioRequestCode);
+        }
 
+    }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 

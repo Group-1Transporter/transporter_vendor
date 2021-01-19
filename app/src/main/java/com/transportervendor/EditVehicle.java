@@ -48,7 +48,6 @@ public class EditVehicle extends AppCompatActivity {
             Picasso.get().load(vehicle.getImageUrl()).placeholder(R.drawable.transporter_logo).into(binding.ivVehicleImage);
         }else
             Toast.makeText(this, "please enable internet connection", Toast.LENGTH_SHORT).show();
-        binding.etcategory.setText(vehicle.getName());
         binding.etcount.setText(vehicle.getCount());
         binding.btnDone.setText("Update");
         binding.ivBackErroe.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +112,6 @@ public class EditVehicle extends AppCompatActivity {
                     }
                 }else {
                     String etcount=binding.etcount.getText().toString();
-                    String etcat=binding.etcategory.getText().toString();
                     SharedPreferences mPrefs = getSharedPreferences("Transporter", MODE_PRIVATE);
                     String json=mPrefs.getString("Transporter","");
                     Gson gson = new Gson();
@@ -122,7 +120,7 @@ public class EditVehicle extends AppCompatActivity {
                     for(int i=0;i<al.size();i++){
                         Vehicle ve=al.get(i);
                         if(vehicle.getVehicleId().equals(ve.getVehicleId())){
-                            ve.setName(etcat);
+                            ve.setName((String) binding.sp.getSelectedItem());
                             ve.setCount(etcount);
                             al.set(i,ve);
                             break;

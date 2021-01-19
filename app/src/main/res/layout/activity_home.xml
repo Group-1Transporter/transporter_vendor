@@ -17,20 +17,28 @@
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/appbar"
             >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/toolbar"
+                android:layout_toLeftOf="@id/drawicon"
                 app:titleTextColor="@color/white"
                 >
+
+            </androidx.appcompat.widget.Toolbar>
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:src="@drawable/ic_baseline_menu_24"
-                    android:layout_marginLeft="130dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_centerVertical="true"
                     android:id="@+id/drawicon"
                     />
-            </androidx.appcompat.widget.Toolbar>
+            </RelativeLayout>
         </com.google.android.material.appbar.AppBarLayout>
         <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
@@ -46,7 +54,7 @@
             android:background="@color/colorPrimary"
             app:tabIndicatorColor="@color/white"
             app:tabTextColor="@color/white"
-            app:tabIndicatorHeight="2dp"
+            app:tabIndicatorHeight="3dp"
             android:layout_alignParentBottom="true"
             />
     </RelativeLayout>

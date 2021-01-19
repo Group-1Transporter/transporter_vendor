@@ -1,46 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <RadioGroup
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/rg"
-        android:weightSum="1"
-        >
-        <RadioButton
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="Completed leads"
-            android:id="@+id/complete"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:buttonTint="@color/white"
-            android:checked="true"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:background="@drawable/history_radio_btn"
-            />
-        <RadioButton
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:id="@+id/all"
-            android:text="All bids"
-            android:buttonTint="@color/white"
-            android:background="@drawable/history_radio_btn"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:textColor="@color/white"/>
-    </RadioGroup>
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/rg"
-        android:id="@+id/rv"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentTop="true"
+        android:id="@+id/tablayout"
+        app:tabIndicatorColor="@color/white"
+        app:tabTextColor="@color/white"
+        app:tabIndicatorHeight="3dp"
         />
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_below="@id/tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@id/rg"-->
+<!--        android:id="@+id/rv"-->
+<!--        />-->
 </RelativeLayout>

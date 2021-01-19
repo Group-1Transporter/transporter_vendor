@@ -17,6 +17,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -48,6 +49,9 @@ public class VehicleService {
                                                @Part("transporterId") RequestBody transporterId,
                                                @Part MultipartBody.Part file
                                                           );
+        @GET("/vehicle/category")
+        public  Call<ArrayList<Object>> getCategory();
+
         @DELETE("/vehicle/{id}/{transporterId}")
         public Call<Transporter> deleteVehicle(@Path("id") String id,
                                            @Path("transporterId") String transporterId

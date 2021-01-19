@@ -22,6 +22,7 @@ import com.transportervendor.CustomProgressDialog;
 import com.transportervendor.NetworkUtil;
 import com.transportervendor.R;
 import com.transportervendor.apis.BidService;
+import com.transportervendor.apis.LeadsService;
 import com.transportervendor.apis.UserService;
 import com.transportervendor.beans.BidWithLead;
 import com.transportervendor.beans.Leads;
@@ -30,6 +31,7 @@ import com.transportervendor.databinding.MarketLeadViewBinding;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import retrofit2.Call;
@@ -38,12 +40,13 @@ import retrofit2.Response;
 
 public class MarketLeadAdapter extends RecyclerView.Adapter<MarketLeadAdapter.MarketLeadViewHolder> {
     Context context;
-    ArrayList<Leads>al;
-    ArrayList<String>lid;
-    public MarketLeadAdapter(Context context,ArrayList<Leads>al){
-        this.al=al;
-        this.context=context;
-        lid=new ArrayList<>();
+    ArrayList<Leads> al;
+    ArrayList<String> lid;
+
+    public MarketLeadAdapter(Context context, ArrayList<Leads> al) {
+        this.al = al;
+        this.context = context;
+        lid = new ArrayList<>();
     }
 
     public void setLid(ArrayList<String> lid) {
@@ -53,13 +56,13 @@ public class MarketLeadAdapter extends RecyclerView.Adapter<MarketLeadAdapter.Ma
     @NonNull
     @Override
     public MarketLeadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        MarketLeadViewBinding binding=MarketLeadViewBinding.inflate(LayoutInflater.from(context));
-        return new MarketLeadViewHolder(binding) ;
+        MarketLeadViewBinding binding = MarketLeadViewBinding.inflate(LayoutInflater.from(context));
+        return new MarketLeadViewHolder(binding);
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(@NonNull final MarketLeadViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MarketLeadViewHolder holder, final int position) {
         final Leads leads = al.get(position);
         String name = "";
         String str[] = leads.getPickUpAddress().split(",");
@@ -68,18 +71,18 @@ public class MarketLeadAdapter extends RecyclerView.Adapter<MarketLeadAdapter.Ma
         name += " to " + str[str.length - 2];
         UserService.UserApi userApi = UserService.getUserApiInstance();
         Call<User> call = userApi.getUser(leads.getUserId());
-        Long t=Long.parseLong(leads.getTimestamp());
-        Timestamp timestamp=new Timestamp(t);
-        Date date=new Date(timestamp.getTime());
-        holder.binding.ptime.setText(date+"");
+        Long t = Long.parseLong(leads.getTimestamp());
+        Timestamp timestamp = new Timestamp(t);
+        Date date = new Date(timestamp.getTime());
+        holder.binding.ptime.setText(date + "");
         if (NetworkUtil.getConnectivityStatus(context)) {
-            final CustomProgressDialog pd=new CustomProgressDialog(context,"Please wait...");
+            final CustomProgressDialog pd = new CustomProgressDialog(context, "Please wait...");
             pd.show();
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     pd.dismiss();
-                    if(response.code()==200) {
+                    if (response.code() == 200) {
                         holder.binding.username.setText(response.body().getName());
                         Picasso.get().load(response.body().getImageUrl()).placeholder(R.drawable.user).into(holder.binding.uiv);
                     }
@@ -92,34 +95,84 @@ public class MarketLeadAdapter extends RecyclerView.Adapter<MarketLeadAdapter.Ma
                 }
             });
         } else
-           Toast.makeText(context, "please enable internet connection.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "please enable internet connection.", Toast.LENGTH_SHORT).show();
         holder.binding.tvfrom.setText(name);
         holder.binding.lastdate.setText("Last Date: " + leads.getDateOfCompletion());
         holder.binding.tvmaterial.setText(leads.getTypeOfMaterial());
         holder.binding.tvweight.setText(leads.getWeight());
-        if (lid.contains(leads.getLeadId())) {
-            holder.binding.bidbtn.setText("Bidded");
-            holder.binding.bidbtn.setBackgroundResource(R.drawable.bg_btn_bid);
+        String[] st = leads.getDateOfCompletion().split("/");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.parseInt(st[2]), Integer.parseInt(st[1]), Integer.parseInt(st[0]), 0, 0, 0);
+        long dat = calendar.getTimeInMillis();
+        if (leads.isActive()) {
+            if ((Calendar.getInstance().getTimeInMillis() - dat) > 0) {
+                leads.setActive(false);
+                LeadsService.LeadsApi leadsApi = LeadsService.getLeadsApiInstance();
+                Call<Leads> cal = leadsApi.updateLeads(leads);
+                cal.enqueue(new Callback<Leads>() {
+                    @Override
+                    public void onResponse(Call<Leads> call, Response<Leads> response) {
+                        if (response.isSuccessful()) {
+                            holder.binding.bidbtn.setBackgroundResource(R.drawable.view_inactive);
+                            holder.binding.bidbtn.setText("Inactive");
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<Leads> call, Throwable t) {
+                        Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         } else {
-            holder.binding.bidbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View view) {
-                    Intent in = new Intent(context, BidNowActivity.class);
-                    in.putExtra("leads", leads);
-                    view.getContext().startActivity(in);
-                }
-            });
+            if ((Calendar.getInstance().getTimeInMillis() - dat) >= (86400000 * 5)) {
+                LeadsService.LeadsApi leadsApi = LeadsService.getLeadsApiInstance();
+                Call<Leads> cal = leadsApi.deleteLead(leads.getLeadId());
+                cal.enqueue(new Callback<Leads>() {
+                    @Override
+                    public void onResponse(Call<Leads> call, Response<Leads> response) {
+                        if (response.isSuccessful()) {
+                            al.remove(position);
+                            notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Leads> call, Throwable t) {
+                        Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        }
+        if (leads.isActive()) {
+            if (lid.contains(leads.getLeadId())) {
+                holder.binding.bidbtn.setText("Bidded");
+                holder.binding.bidbtn.setBackgroundResource(R.drawable.bg_btn_bid);
+            } else {
+                holder.binding.bidbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View view) {
+                        Intent in = new Intent(context, BidNowActivity.class);
+                        in.putExtra("leads", leads);
+                        view.getContext().startActivity(in);
+                    }
+                });
+            }
+        }else{
+            holder.binding.bidbtn.setBackgroundResource(R.drawable.view_inactive);
+            holder.binding.bidbtn.setText("Inactive");
         }
     }
 
     @Override
     public int getItemCount() {
-       return al.size();
+        return al.size();
     }
 
-    public class MarketLeadViewHolder extends RecyclerView.ViewHolder{
+    public class MarketLeadViewHolder extends RecyclerView.ViewHolder {
         MarketLeadViewBinding binding;
+
         public MarketLeadViewHolder(@NonNull MarketLeadViewBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

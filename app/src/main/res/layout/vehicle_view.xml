@@ -1,48 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp"
-    android:orientation="horizontal">
+    >
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/pic"
-        android:layout_width="60dp"
-        android:layout_gravity="center"
-        android:layout_height="60dp"
-        android:src="@drawable/transporter_logo" />
-
-    <LinearLayout
-        android:layout_width="200dp"
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:orientation="vertical">
+        app:cardCornerRadius="5dp"
+        app:cardElevation="10dp"
+        app:cardUseCompatPadding="true"
+        >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:padding="10dp"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/pic"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/transporter_logo" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="truck"
-            android:textStyle="bold"
-            android:singleLine="true"
-            android:id="@+id/name"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/pic"
+                android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/count"
-            android:textColor="@color/black"
-            android:padding="5dp"
-            android:textSize="16sp"
-            android:text="   5" />
-    </LinearLayout>
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="35dp"
-        android:id="@+id/more"
-        android:src="@drawable/more"
-        android:layout_gravity="center_vertical"
-        />
-</LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vehicle:-" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="truck"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="count:-"
+                        />
+                    <TextView
+                        android:id="@+id/count"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="7dp"
+                        android:text="5"
+                        android:textColor="@color/black"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/more"
+                android:layout_width="25dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/more" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

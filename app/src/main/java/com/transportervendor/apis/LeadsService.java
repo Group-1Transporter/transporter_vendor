@@ -6,7 +6,9 @@ import com.transportervendor.beans.State;
 import com.transportervendor.beans.Transporter;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,8 +21,14 @@ import retrofit2.http.Path;
 public class LeadsService {
     public static LeadsService.LeadsApi leadsApi=null;
     public static LeadsService.LeadsApi getLeadsApiInstance(){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(ServerAddress.serverAddress)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         if(leadsApi==null){
@@ -47,5 +55,8 @@ public class LeadsService {
 
         @POST("/lead/transporter/current-lead/filter/")
         public Call<ArrayList<Leads>> getfilteredLeads(@Body ArrayList<String>al);
+
+        @DELETE("/lead/{id}")
+        public Call<Leads> deleteLead(@Path("id") String id);
     }
 }

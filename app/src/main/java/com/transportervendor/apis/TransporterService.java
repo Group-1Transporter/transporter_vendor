@@ -3,8 +3,10 @@ package com.transportervendor.apis;
 import com.transportervendor.beans.Transporter;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -20,7 +22,13 @@ import retrofit2.http.Path;
 public class TransporterService {
     public static TransporterApi transporterApi=null;
     public static TransporterApi getTransporterApiInstance(){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
         Retrofit retrofit=new Retrofit.Builder()
+                .client(okHttpClient)
                 .baseUrl(ServerAddress.serverAddress)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

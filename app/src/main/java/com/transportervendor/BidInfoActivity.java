@@ -63,9 +63,9 @@ public class BidInfoActivity extends AppCompatActivity {
             });
         }
         binding.etRemark.setText(bid.getBid().getRemark());
-        String str[] = bid.getLead().getPickUpAddress().split(" ");
+        String str[] = bid.getLead().getPickUpAddress().split(",");
         String name = str[str.length - 2];
-        str = bid.getLead().getDeliveryAddress().split(" ");
+        str = bid.getLead().getDeliveryAddress().split(",");
         name += " to " + str[str.length-2];
         binding.tvfrom.setText(name);
         binding.tvmaterial.setText("Material: " +bid.getLead().getTypeOfMaterial());

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class BidWithLead implements Serializable {
+public class BidWithLead implements Serializable,Comparable {
     private Bid bid;
 
     private Leads leads;
@@ -32,5 +32,12 @@ public class BidWithLead implements Serializable {
 
     public void setLead(Leads leads) {
         this.leads = leads;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        String tm=((BidWithLead)o).leads.getTimestamp();
+        Long t=Long.parseLong(tm);
+        return (int) (t-Long.parseLong(this.leads.getTimestamp()));
     }
 }
