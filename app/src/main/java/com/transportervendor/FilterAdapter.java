@@ -27,7 +27,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     @NonNull
     @Override
     public FilterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        StateViewBinding binding=StateViewBinding.inflate(LayoutInflater.from(context));
+        StateViewBinding binding=StateViewBinding.inflate(LayoutInflater.from(context),parent,false);
         return new FilterViewHolder(binding);
     }
 
@@ -35,7 +35,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     public void onBindViewHolder(@NonNull FilterViewHolder holder, int position) {
         final State state=al.get(position);
         holder.binding.name.setText(state.getStateName());
-        holder.binding.name.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.binding.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){

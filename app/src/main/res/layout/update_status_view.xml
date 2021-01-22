@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/darker_gray"
     >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_bid_now"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="40dp"
         android:paddingBottom="10dp"
         >
     <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="loaded"
-        android:layoutDirection="rtl"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="20dp"
         android:id="@+id/loaded"
@@ -25,8 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layoutDirection="rtl"
-        android:layout_centerInParent="true"
         android:layout_below="@id/loaded"
         android:id="@+id/intransit"
         android:text="in transit"
@@ -36,9 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:id="@+id/reached"
-        android:layoutDirection="rtl"
         android:text="Reached"
         android:textSize="20sp"
         android:layout_below="@id/intransit"
@@ -47,39 +42,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layoutDirection="rtl"
         android:text="delivered"
         android:layout_below="@id/reached"
-        android:layout_centerInParent="true"
         android:id="@+id/delivered"
         android:textSize="20sp"
         />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/delivered"
-            android:gravity="center_horizontal"
-            >
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:text="Cancel"
-        android:id="@+id/btncancel"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/white"
-        android:background="@drawable/background_btn_bid"
-        />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:textColor="@color/white"
-        android:text="Update"
-        android:id="@+id/btnupdate"
-        android:layout_marginLeft="40dp"
-        android:background="@drawable/background_btn_bid"
-        android:layout_marginTop="20dp"/>
-        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>

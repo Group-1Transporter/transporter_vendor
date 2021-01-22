@@ -11,6 +11,7 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,9 @@ import com.transportervendor.beans.Vehicle;
 import com.transportervendor.databinding.AddVehicleActivityBinding;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -51,7 +55,31 @@ public class AddVehicleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding=AddVehicleActivityBinding.inflate(LayoutInflater.from(AddVehicleActivity.this));
         setContentView(binding.getRoot());
+
         setSupportActionBar(binding.tbToolBar);
+        VehicleService.VehicleApi vehicleApi=VehicleService.getVehicleApiInstance();
+        Call<ArrayList<Object>>call=vehicleApi.getCategory();
+        call.enqueue(new Callback<ArrayList<Object>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Object>> call, Response<ArrayList<Object>> response) {
+                if(response.isSuccessful()){
+                    ArrayList al=response.body();
+                    al= (ArrayList) al.get(0);
+                    Collections.sort(al);
+                    al.add(0,"Select Vehicle");
+                    final ArrayAdapter<String> ad = new ArrayAdapter<String>(AddVehicleActivity.this,android.R.layout.simple_spinner_item,(ArrayList<String>)al);
+                    ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    binding.sp.setAdapter(ad);
+                }else{
+                    Toast.makeText(AddVehicleActivity.this, ""+response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Object>> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -87,9 +115,9 @@ public class AddVehicleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (NetworkUtil.getConnectivityStatus(AddVehicleActivity.this)) {
-                    String etcategory = binding.etcategory.getText().toString();
-                    if (etcategory.isEmpty()) {
-                        binding.etcategory.setError("this field can't be empty.");
+                    String etcategory =(String) binding.sp.getSelectedItem();
+                    if (etcategory.equalsIgnoreCase("Select Vehicle")) {
+                        Toast.makeText(AddVehicleActivity.this, "Please select vehicle category.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     String etcount = binding.etcount.getText().toString();

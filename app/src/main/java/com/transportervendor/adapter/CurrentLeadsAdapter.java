@@ -3,6 +3,7 @@ package com.transportervendor.adapter;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -92,6 +93,7 @@ public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapte
                             String status="confirmed";
                             final UpdateStatusViewBinding binding=UpdateStatusViewBinding.inflate(LayoutInflater.from(context));
                             ab.setView(binding.getRoot());
+                            ab.setTitle("Update Status");
                             if(leads.getStatus().equalsIgnoreCase("confirmed")){
 
                             }else{
@@ -106,10 +108,10 @@ public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapte
                                     binding.reached.setChecked(true);
                                 }
                             }
-                            binding.btnupdate.setOnClickListener(new View.OnClickListener() {
+                            ab.setButton(DialogInterface.BUTTON_POSITIVE, "Apply", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    String status="";
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String status="confirmed";
                                     if(binding.loaded.isChecked())
                                         status="loaded";
                                     if(binding.intransit.isChecked())
@@ -144,7 +146,7 @@ public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapte
                                                                     RequestQueue queue = Volley.newRequestQueue(context);
                                                                     String url = "https://fcm.googleapis.com/fcm/send";
                                                                     JSONObject data = new JSONObject();
-                                                                    data.put("title", "status update");
+                                                                    data.put("title", "sta,j-jtus update");
                                                                     SharedPreferences shared = context.getSharedPreferences("Transporter", Context.MODE_PRIVATE);
                                                                     String json=shared.getString("Transporter","");
                                                                     Gson gson = new Gson();
@@ -165,7 +167,7 @@ public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapte
                                                                     }) {
                                                                         @Override
                                                                         public Map<String, String> getHeaders() {
-                                                                            String api_key_header_value = "Key=AAAA_8lmWnQ:APA91bEYQuN6DDzns0nY2CzXq-FUhVCvv0pGXq0nr3iH_sg27WDB8PcN1RFTz7-If5SNVHOfA3SMuxQyWyPZKb-cns4Sd06iMbIb7vruOHtiBrebRDZAqrMx5Hl5zmHanUFXDCi6ekSr";
+                                                                            String api_key_header_value = "Key=AAAAWv788Wk:APA91bFW0Z_ISKSzu2ZD97ouIZde3jHsaKSvxLG2_adRdmaUCeQ5Jv88XpcNa2o06RruMbRIWF0gYgh6VPYknq-ELrXgIEmp3SVeu3YTH_2cVmEDUT3Jbg1u6N5OxsacPVIFKqkkBhyp";
                                                                             Map<String, String> headers = new HashMap<>();
                                                                             headers.put("Content-Type", "application/json");
                                                                             headers.put("Authorization", api_key_header_value);
@@ -198,9 +200,9 @@ public class CurrentLeadsAdapter extends RecyclerView.Adapter<CurrentLeadsAdapte
                                         Toast.makeText(context, "please enable internet connection.", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                            binding.btncancel.setOnClickListener(new View.OnClickListener() {
+                            ab.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onClick(DialogInterface dialog, int which) {
                                     ab.dismiss();
                                 }
                             });

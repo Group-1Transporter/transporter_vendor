@@ -1,8 +1,11 @@
 package com.transportervendor;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
@@ -12,6 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,15 +27,21 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 import com.transportervendor.adapter.ChatAdapter;
 import com.transportervendor.apis.UserService;
 import com.transportervendor.beans.Message;
+import com.transportervendor.beans.Transporter;
 import com.transportervendor.beans.User;
 import com.transportervendor.databinding.ChatActivityBinding;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,10 +49,11 @@ import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
     ChatActivityBinding binding;
-    String userId;
+    String userId,token;
     DatabaseReference firebaseDatabase;
     ChatAdapter adapter;
-    ArrayList<Message>al;
+    ArrayList<Message> al;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +65,7 @@ public class ChatActivity extends AppCompatActivity {
         UserService.UserApi userApi = UserService.getUserApiInstance();
         Call<User> call = userApi.getUser(userId);
         if (NetworkUtil.getConnectivityStatus(this)) {
-            final ProgressDialog pd=new ProgressDialog(ChatActivity.this);
+            final ProgressDialog pd = new ProgressDialog(ChatActivity.this);
             pd.setCancelable(true);
             pd.setTitle("Loading...");
             pd.show();
@@ -60,8 +74,10 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     pd.dismiss();
-                    if (response.code() == 200)
+                    if (response.code() == 200) {
                         getSupportActionBar().setTitle(response.body().getName());
+                        token=response.body().getToken();
+                    }
                 }
 
                 @Override
@@ -104,8 +120,46 @@ public class ChatActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(ChatActivity.this, "Message sent.", Toast.LENGTH_SHORT).show();
-                                            binding.etmsg.setText("");
+
+                                            try {
+                                                RequestQueue queue = Volley.newRequestQueue(ChatActivity.this);
+                                                String url = "https://fcm.googleapis.com/fcm/send";
+                                                SharedPreferences shared = getSharedPreferences("Transporter", Context.MODE_PRIVATE);
+                                                String json = shared.getString("Transporter", "");
+                                                Gson gson = new Gson();
+                                                Transporter transporter = gson.fromJson(json, Transporter.class);
+                                                JSONObject data = new JSONObject();
+                                                data.put("title", "New Message");
+                                                data.put("body", "From : " + transporter.getName());
+                                                JSONObject notification_data = new JSONObject();
+                                                notification_data.put("data", data);
+                                                notification_data.put("to", token);
+                                                JsonObjectRequest request = new JsonObjectRequest(url, notification_data, new com.android.volley.Response.Listener<JSONObject>() {
+                                                    @Override
+                                                    public void onResponse(JSONObject response) {
+                                                        Toast.makeText(ChatActivity.this, "Message sent.", Toast.LENGTH_SHORT).show();
+                                                        binding.etmsg.setText("");
+                                                    }
+                                                }, new com.android.volley.Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        Log.e("spanshoe", "error..." + error.getMessage());
+                                                        Toast.makeText(ChatActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }) {
+                                                    @Override
+                                                    public Map<String, String> getHeaders() {
+                                                        String api_key_header_value = "Key=AAAAWv788Wk:APA91bFW0Z_ISKSzu2ZD97ouIZde3jHsaKSvxLG2_adRdmaUCeQ5Jv88XpcNa2o06RruMbRIWF0gYgh6VPYknq-ELrXgIEmp3SVeu3YTH_2cVmEDUT3Jbg1u6N5OxsacPVIFKqkkBhyp";
+                                                        Map<String, String> headers = new HashMap<>();
+                                                        headers.put("Content-Type", "application/json");
+                                                        headers.put("Authorization", api_key_header_value);
+                                                        return headers;
+                                                    }
+                                                };
+                                                queue.add(request);
+                                            } catch (Exception e) {
+                                                Toast.makeText(ChatActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     }
                                 });
@@ -117,14 +171,14 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
-        al=new ArrayList<>();
+        al = new ArrayList<>();
         firebaseDatabase.child("Messages").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(userId).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
                     Message msg = snapshot.getValue(Message.class);
                     al.add(msg);
-                    adapter=new ChatAdapter(ChatActivity.this,al);
+                    adapter = new ChatAdapter(ChatActivity.this, al);
                     binding.rv.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     binding.rv.smoothScrollToPosition(adapter.getItemCount());

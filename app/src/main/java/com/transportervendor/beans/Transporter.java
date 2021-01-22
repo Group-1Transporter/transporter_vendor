@@ -28,9 +28,9 @@ public class Transporter {
 	@SerializedName("aadharCardNumber")
 	@Expose
 	private String aadharCardNumber;
-	@SerializedName("gstNo")
+	@SerializedName("gstNumber")
 	@Expose
-	private String gstNo;
+	private String gstNumber;
 	@SerializedName("rating")
 	@Expose
 	private String rating;
@@ -46,7 +46,7 @@ public class Transporter {
 	public Transporter() {
 	}
 
-	public Transporter(String name, String transporterId, String type, String imageUrl, String contactNumber, String address, String aadharCardNumber, String gstNo, String rating, String token, ArrayList<Vehicle> vehicleList) {
+	public Transporter(String name, String transporterId, String type, String imageUrl, String contactNumber, String address, String aadharCardNumber, String gstNumber, String rating, String token, ArrayList<Vehicle> vehicleList) {
 		this.name = name;
 		this.transporterId = transporterId;
 		this.type = type;
@@ -54,7 +54,7 @@ public class Transporter {
 		this.contactNumber = contactNumber;
 		this.address = address;
 		this.aadharCardNumber = aadharCardNumber;
-		this.gstNo = gstNo;
+		this.gstNumber = gstNumber;
 		this.rating = rating;
 		this.token = token;
 		this.vehicleList = vehicleList;
@@ -124,12 +124,12 @@ public class Transporter {
 		this.aadharCardNumber = aadharCardNumber;
 	}
 
-	public String getGstNo() {
-		return gstNo;
+	public String getGstNumber() {
+		return gstNumber;
 	}
 
-	public void setGstNo(String gstNo) {
-		this.gstNo = gstNo;
+	public void setGstNumber(String gstNumber) {
+		this.gstNumber = gstNumber;
 	}
 
 	public String getRating() {

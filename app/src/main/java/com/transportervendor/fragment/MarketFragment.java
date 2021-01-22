@@ -19,6 +19,7 @@ import com.transportervendor.CustomProgressDialog;
 import com.transportervendor.Filter;
 import com.transportervendor.FilterAdapter;
 import com.transportervendor.NetworkUtil;
+import com.transportervendor.SortByName;
 import com.transportervendor.adapter.MarketLeadAdapter;
 import com.transportervendor.apis.LeadsService;
 import com.transportervendor.apis.StateService;
@@ -28,6 +29,7 @@ import com.transportervendor.databinding.DialogViewBinding;
 import com.transportervendor.databinding.FragmentMarketBinding;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +64,7 @@ public class MarketFragment extends Fragment {
                     pd.dismiss();
                     if (response.code() == 200) {
                         ArrayList<Leads> al = response.body();
+                        Collections.sort(al);
                         fragment.rv.setLayoutManager(new LinearLayoutManager(getContext()));
                         adapter = new MarketLeadAdapter(getContext(), al);
                         fragment.rv.setAdapter(adapter);
@@ -111,6 +114,7 @@ public class MarketFragment extends Fragment {
                                 pd.dismiss();
                                 if (response.isSuccessful()) {
                                     ArrayList<State>al=response.body();
+                                    Collections.sort(al,new SortByName());
                                     FilterAdapter adapter = new FilterAdapter(getContext(),al);
                                     alb.rv.setAdapter(adapter);
                                 }
@@ -127,6 +131,7 @@ public class MarketFragment extends Fragment {
                     }
                     final AlertDialog ab = new AlertDialog.Builder(getContext()).create();
                     ab.setView(alb.getRoot());
+                    ab.setTitle("Filter");
                     alb.btncancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

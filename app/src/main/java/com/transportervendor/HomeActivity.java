@@ -3,23 +3,23 @@ package com.transportervendor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 import com.transportervendor.adapter.TabAccessorAdapter;
 import com.transportervendor.apis.TransporterService;
 import com.transportervendor.beans.Transporter;
@@ -28,7 +28,6 @@ import com.transportervendor.databinding.ActivityHomeBinding;
 import com.transportervendor.databinding.HeaderDrawerBinding;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -126,6 +125,15 @@ public class HomeActivity extends AppCompatActivity {
         }
         View view=homeBinding.navigationView.inflateHeaderView(R.layout.header_drawer);
         ImageView iv=view.findViewById(R.id.btnback);
+        ImageView civ=view.findViewById(R.id.logo);
+        TextView name=view.findViewById(R.id.name);
+        json=shared.getString("Transporter","");
+        if (!json.equalsIgnoreCase("")){
+            Gson gson=new Gson();
+            transporter=gson.fromJson(json,Transporter.class);
+            Picasso.get().load(transporter.getImage()).placeholder(R.drawable.transporter_logo).into(civ);
+            name.setText(transporter.getName());
+        }
         HeaderDrawerBinding header= HeaderDrawerBinding.inflate(LayoutInflater.from(HomeActivity.this));
                 iv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +172,10 @@ public class HomeActivity extends AppCompatActivity {
                 }else if(id==R.id.contact){
                     Intent in=new Intent(HomeActivity.this,ContactUs.class);
                     startActivity(in);
-                }else if(id==R.id.logout){
+                }else if (id==R.id.rating) {
+                    Intent in=new Intent(HomeActivity.this, RatingsActivity.class);
+                    startActivity(in);
+                } else if(id==R.id.logout){
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);

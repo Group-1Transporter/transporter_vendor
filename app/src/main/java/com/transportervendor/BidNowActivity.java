@@ -105,12 +105,15 @@ public class BidNowActivity extends AppCompatActivity {
                                             try {
                                                 RequestQueue queue = Volley.newRequestQueue(BidNowActivity.this);
                                                 String url = "https://fcm.googleapis.com/fcm/send";
-                                                JSONObject data = new JSONObject();
-                                                data.put("title", "new bid");
+
+                                                String token = user.getToken();
+                                                Log.e("Token ======>>>>>>",""+user.getToken()+"    ============="+token);
                                                 SharedPreferences shared = getSharedPreferences("Transporter", Context.MODE_PRIVATE);
                                                 String json=shared.getString("Transporter","");
                                                 Gson gson = new Gson();
                                                 Transporter transporter = gson.fromJson(json, Transporter.class);
+                                                JSONObject data = new JSONObject();
+                                                data.put("title", "new bid");
                                                 data.put("body", "From : " + transporter.getName());
                                                 JSONObject notification_data = new JSONObject();
                                                 notification_data.put("data", data);
@@ -118,7 +121,6 @@ public class BidNowActivity extends AppCompatActivity {
                                                 JsonObjectRequest request = new JsonObjectRequest(url, notification_data, new com.android.volley.Response.Listener<JSONObject>() {
                                                     @Override
                                                     public void onResponse(JSONObject response) {
-                                                        Log.e("spanshoe","response");
                                                     }
                                                 }, new com.android.volley.Response.ErrorListener() {
                                                     @Override
@@ -129,7 +131,7 @@ public class BidNowActivity extends AppCompatActivity {
                                                 }) {
                                                     @Override
                                                     public Map<String, String> getHeaders() {
-                                                        String api_key_header_value = "Key=AAAA_8lmWnQ:APA91bEYQuN6DDzns0nY2CzXq-FUhVCvv0pGXq0nr3iH_sg27WDB8PcN1RFTz7-If5SNVHOfA3SMuxQyWyPZKb-cns4Sd06iMbIb7vruOHtiBrebRDZAqrMx5Hl5zmHanUFXDCi6ekSr";
+                                                        String api_key_header_value = "Key=AAAAWv788Wk:APA91bFW0Z_ISKSzu2ZD97ouIZde3jHsaKSvxLG2_adRdmaUCeQ5Jv88XpcNa2o06RruMbRIWF0gYgh6VPYknq-ELrXgIEmp3SVeu3YTH_2cVmEDUT3Jbg1u6N5OxsacPVIFKqkkBhyp";
                                                         Map<String, String> headers = new HashMap<>();
                                                         headers.put("Content-Type", "application/json");
                                                         headers.put("Authorization", api_key_header_value);

@@ -4,7 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Leads implements Serializable {
+public class Leads implements Serializable, Comparable {
+	@SerializedName("active")
+	@Expose
+	private boolean active=true;
 	@SerializedName("userId")
 	@Expose
 	private String userId;
@@ -53,7 +56,7 @@ public class Leads implements Serializable {
 	}
 	public Leads(String userId, String leadId, String typeOfMaterial, String weight, String pickUpAddress,
 			String deliveryAddress, String contactForPickup, String contactForDelivery, String dateOfCompletion,
-			String timestamp, String status, String vehicleNumber, String dealLockedWith, String bidCount) {
+			String timestamp, String status, String vehicleNumber, String dealLockedWith, String bidCount,boolean active) {
 		super();
 		this.userId = userId;
 		this.leadId = leadId;
@@ -69,7 +72,17 @@ public class Leads implements Serializable {
 		this.vehicleNumber = vehicleNumber;
 		this.dealLockedWith = dealLockedWith;
 		this.bidCount = bidCount;
+		this.active=active;
 	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	public String getUserId() {
 		return userId;
 	}
@@ -154,5 +167,10 @@ public class Leads implements Serializable {
 	public void setBidCount(String bidCount) {
 		this.bidCount = bidCount;
 	}
-	
+
+	@Override
+	public int compareTo(Object o) {
+		long tm=Long.parseLong(((Leads)o).getTimestamp());
+		return (int) ((int) tm-Long.parseLong(this.timestamp));
+	}
 }

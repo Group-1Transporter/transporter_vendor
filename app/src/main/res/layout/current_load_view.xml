@@ -57,7 +57,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="33dp"
                 android:padding="3dp"
                 android:id="@+id/tvdate"
                 android:singleLine="true"
