@@ -16,6 +16,13 @@
         <item name="android:screenOrientation">portrait</item>
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
+    <style name="customRatingBar"
+        parent="android:style/Widget.Material.RatingBar.Small"
+        >
+        <item name="color">@color/green</item>
+        ... // Additional customizations
+
+    </style>
     <style name="FirebaseUI.Button.AccountChooser.EmailButton">
         <item name="drawableStartCompat">@drawable/email1</item>
         <item name="android:textColor">@color/colorPrimary</item>

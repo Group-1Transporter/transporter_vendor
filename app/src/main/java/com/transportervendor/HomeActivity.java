@@ -3,12 +3,10 @@ package com.transportervendor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -30,7 +28,6 @@ import com.transportervendor.databinding.ActivityHomeBinding;
 import com.transportervendor.databinding.HeaderDrawerBinding;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -176,7 +173,7 @@ public class HomeActivity extends AppCompatActivity {
                     Intent in=new Intent(HomeActivity.this,ContactUs.class);
                     startActivity(in);
                 }else if (id==R.id.rating) {
-                    Intent in=new Intent(HomeActivity.this,Ratings.class);
+                    Intent in=new Intent(HomeActivity.this, RatingsActivity.class);
                     startActivity(in);
                 } else if(id==R.id.logout){
                     FirebaseAuth.getInstance().signOut();
