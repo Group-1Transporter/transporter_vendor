@@ -55,8 +55,8 @@ public class AddVehicleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding=AddVehicleActivityBinding.inflate(LayoutInflater.from(AddVehicleActivity.this));
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.tbToolBar);
+        getSupportActionBar().setTitle("Add Vehicle");
         VehicleService.VehicleApi vehicleApi=VehicleService.getVehicleApiInstance();
         Call<ArrayList<Object>>call=vehicleApi.getCategory();
         call.enqueue(new Callback<ArrayList<Object>>() {
@@ -141,7 +141,11 @@ public class AddVehicleActivity extends AppCompatActivity {
 
                         VehicleService.VehicleApi vehicleApi=VehicleService.getVehicleApiInstance();
                         Call<Transporter>call=vehicleApi.createVehicle(name,count,transporterId,body);
-                        final CustomProgressDialog pd=new CustomProgressDialog(AddVehicleActivity.this,"Please wait...");
+                        String s="Please wait...";
+                        if (checkLanguage()){
+                            s="कृपया प्रतीक्षा करें...";
+                        }
+                        final CustomProgressDialog pd=new CustomProgressDialog(AddVehicleActivity.this,s);
                         pd.show();
                         call.enqueue(new Callback<Transporter>() {
                             @Override
@@ -181,5 +185,13 @@ public class AddVehicleActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
     }
 }

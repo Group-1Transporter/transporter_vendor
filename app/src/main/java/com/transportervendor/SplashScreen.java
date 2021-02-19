@@ -1,6 +1,7 @@
 package com.transportervendor;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -46,5 +47,14 @@ public class SplashScreen extends AppCompatActivity {
                 }
             },5000);
 
+    }
+
+    private boolean checkLanguage() {
+        SharedPreferences mprefs =getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
     }
 }

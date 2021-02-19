@@ -1,5 +1,6 @@
 package com.transportervendor;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -15,5 +16,15 @@ public class AboutUs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding=AboutUsBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
     }
 }

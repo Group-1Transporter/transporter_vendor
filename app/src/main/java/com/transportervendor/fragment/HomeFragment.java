@@ -45,16 +45,30 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragment=FragmentHomeBinding.inflate(LayoutInflater.from(getActivity()));
          View v=fragment.getRoot();
+         if (checkLanguage()){
+             fragment.txt.setText("वर्तमान लोड");
+         }
         return v;
     }
-
+    private boolean checkLanguage() {
+        SharedPreferences mprefs =getActivity().getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
+    }
     @Override
     public void onStart() {
         super.onStart();
         LeadsService.LeadsApi leadApi =LeadsService.getLeadsApiInstance();
         Call<ArrayList<BidWithLead>> call = leadApi.getCurrentLeads(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(NetworkUtil.getConnectivityStatus(getContext())) {
-            final CustomProgressDialog pd=new CustomProgressDialog(getContext(),"Please wait...");
+            String s="Please wait...";
+            if (checkLanguage()){
+                s="कृपया प्रतीक्षा करें...";
+            }
+            final CustomProgressDialog pd=new CustomProgressDialog(getContext(),s);
             pd.show();
             call.enqueue(new Callback<ArrayList<BidWithLead>>() {
                 @Override

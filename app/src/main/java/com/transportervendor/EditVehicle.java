@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.transportervendor.databinding.AddVehicleActivityBinding;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -43,6 +45,29 @@ public class EditVehicle extends AppCompatActivity {
         setSupportActionBar(binding.tbToolBar);
         getSupportActionBar().setTitle("Edit Vehicle");
         Intent in=getIntent();
+        VehicleService.VehicleApi vehicleApi=VehicleService.getVehicleApiInstance();
+        Call<ArrayList<Object>>call=vehicleApi.getCategory();
+        call.enqueue(new Callback<ArrayList<Object>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Object>> call, Response<ArrayList<Object>> response) {
+                if(response.isSuccessful()){
+                    ArrayList al=response.body();
+                    al= (ArrayList) al.get(0);
+                    Collections.sort(al);
+                    al.add(0,"Select Vehicle");
+                    final ArrayAdapter<String> ad = new ArrayAdapter<String>(EditVehicle.this,android.R.layout.simple_spinner_item,(ArrayList<String>)al);
+                    ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    binding.sp.setAdapter(ad);
+                }else{
+                    Toast.makeText(EditVehicle.this, ""+response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Object>> call, Throwable t) {
+
+            }
+        });
         final Vehicle vehicle= (Vehicle) in.getSerializableExtra("vehicle");
         if(NetworkUtil.getConnectivityStatus(this)) {
             Picasso.get().load(vehicle.getImageUrl()).placeholder(R.drawable.transporter_logo).into(binding.ivVehicleImage);
@@ -82,7 +107,11 @@ public class EditVehicle extends AppCompatActivity {
                     RequestBody transporterId = RequestBody.create(okhttp3.MultipartBody.FORM, FirebaseAuth.getInstance().getCurrentUser().getUid());
                     Call<Transporter>call=vehicleApi.updateImage(id,transporterId,body);
                     if(NetworkUtil.getConnectivityStatus(EditVehicle.this)) {
-                        final CustomProgressDialog pd=new CustomProgressDialog(EditVehicle.this,"Please wait...");
+                        String s="Please wait...";
+                        if (checkLanguage()){
+                            s="कृपया प्रतीक्षा करें...";
+                        }
+                        final CustomProgressDialog pd=new CustomProgressDialog(EditVehicle.this,s);
                         pd.show();
                         call.enqueue(new Callback<Transporter>() {
                             @Override
@@ -130,7 +159,11 @@ public class EditVehicle extends AppCompatActivity {
                     VehicleService.VehicleApi vehicleApi = VehicleService.getVehicleApiInstance();
                     Call<Transporter> cal = vehicleApi.updateVehicle(transporter);
                     if(NetworkUtil.getConnectivityStatus(EditVehicle.this)) {
-                        final CustomProgressDialog pd=new CustomProgressDialog(EditVehicle.this,"Please wait...");
+                        String s="Please wait...";
+                        if (checkLanguage()){
+                            s="कृपया प्रतीक्षा करें...";
+                        }
+                        final CustomProgressDialog pd=new CustomProgressDialog(EditVehicle.this,s);
                         pd.show();
                         cal.enqueue(new Callback<Transporter>() {
                             @Override
@@ -172,5 +205,13 @@ public class EditVehicle extends AppCompatActivity {
             imgUri=data.getData();
             binding.ivVehicleImage.setImageURI(imgUri);
         }
+    }
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
     }
 }

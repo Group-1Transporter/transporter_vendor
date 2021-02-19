@@ -45,6 +45,13 @@
             android:layout_marginLeft="10dp"
             android:textSize="18sp"
             />
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:id="@+id/mic"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/mic"
+            />
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="37dp"

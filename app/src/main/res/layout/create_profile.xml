@@ -110,6 +110,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Pending"
+                                android:id="@+id/pd"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -135,6 +136,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Completed"
+                                android:id="@+id/cp"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -160,6 +162,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Total"
+                                android:id="@+id/tt"
                                 android:textSize="20sp" />
 
                             <TextView

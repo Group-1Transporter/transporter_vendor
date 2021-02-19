@@ -1,9 +1,11 @@
 package com.transportervendor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
@@ -34,7 +36,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     @Override
     public void onBindViewHolder(@NonNull FilterViewHolder holder, int position) {
         final State state=al.get(position);
-        holder.binding.name.setText(state.getStateName());
+        if (checkLanguage()){
+            ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(context, R.array.state_list, android.R.layout.simple_spinner_item);
+            holder.binding.name.setText(adapter1.getItem(position));
+        }else {
+            holder.binding.name.setText(state.getStateName());
+        }
         holder.binding.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -59,4 +66,13 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
             this.binding=binding;
         }
     }
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =context.getSharedPreferences("Transporter",context.MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
+    }
+
 }

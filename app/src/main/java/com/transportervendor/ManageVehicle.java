@@ -2,6 +2,7 @@ package com.transportervendor;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,14 +45,25 @@ public class ManageVehicle extends AppCompatActivity {
         });
 
     }
-
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
+    }
     @Override
     protected void onStart() {
         super.onStart();
         TransporterService.TransporterApi transporterApi=TransporterService.getTransporterApiInstance();
         Call<Transporter>call=transporterApi.getTransporter(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(NetworkUtil.getConnectivityStatus(ManageVehicle.this)) {
-            final CustomProgressDialog pd=new CustomProgressDialog(ManageVehicle.this,"Please wait...");
+            String s="Please wait...";
+            if (checkLanguage()){
+                s="कृपया प्रतीक्षा करें...";
+            }
+            final CustomProgressDialog pd=new CustomProgressDialog(ManageVehicle.this,s);
             pd.show();
             call.enqueue(new Callback<Transporter>() {
                 @Override

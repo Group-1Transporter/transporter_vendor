@@ -28,6 +28,7 @@
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@id/btnback"
             android:padding="5dp"
+            android:id="@+id/menu"
             android:text="Menu"
             android:textColor="@color/white"
             android:textSize="20sp"

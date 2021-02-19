@@ -1,18 +1,28 @@
 package com.transportervendor;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.RequestQueue;
@@ -41,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -48,12 +59,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
+    public static final Integer RecordAudioRequestCode = 1;
+    private SpeechRecognizer speechRecognizer;
     ChatActivityBinding binding;
     String userId,token;
     DatabaseReference firebaseDatabase;
     ChatAdapter adapter;
     ArrayList<Message> al;
 
+    private boolean checkLanguage() {
+        SharedPreferences mprefs = getSharedPreferences("Transporter", MODE_PRIVATE);
+        String s = mprefs.getString("language", "");
+        if (s.equalsIgnoreCase("hindi")) {
+            return true;
+        }
+        return false;
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +86,11 @@ public class ChatActivity extends AppCompatActivity {
         UserService.UserApi userApi = UserService.getUserApiInstance();
         Call<User> call = userApi.getUser(userId);
         if (NetworkUtil.getConnectivityStatus(this)) {
-            final ProgressDialog pd = new ProgressDialog(ChatActivity.this);
+            String s="Please wait...";
+            if (checkLanguage()){
+                s="कृपया प्रतीक्षा करें...";
+            }
+            final CustomProgressDialog pd=new CustomProgressDialog(ChatActivity.this,s);
             pd.setCancelable(true);
             pd.setTitle("Loading...");
             pd.show();
@@ -95,6 +120,75 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.RECORD_AUDIO) != PermissionChecker.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, RecordAudioRequestCode);
+        }
+        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        binding.mic.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    speechRecognizer.stopListening();
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    binding.mic.setImageResource(R.drawable.mic);
+                    speechRecognizer.startListening(speechRecognizerIntent);
+                }
+                return false;
+            }
+        });
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle params) {
+                binding.etmsg.setText("");
+                binding.mic.setImageResource(R.drawable.mic_yellow);
+                binding.etmsg.setHint("Listening...");
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int error) {
+
+            }
+
+            @Override
+            public void onResults(Bundle results) {
+                binding.mic.setImageResource(R.drawable.mic);
+                ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                binding.etmsg.setText(data.get(0));
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {
+
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {
+
+            }
+        });
         binding.rv.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
         binding.btnsend.setOnClickListener(new View.OnClickListener() {
             @Override

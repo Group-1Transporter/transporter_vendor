@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -52,6 +53,7 @@ import com.transportervendor.databinding.CreateProfileBinding;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,7 +76,7 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
     private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 500f;
     CreateProfileBinding binding;
     public static final Integer RecordAudioRequestCode = 1;
-    String imgUrl = "";
+    String imgUrl = "",phone;
     ArrayList<Vehicle> al = new ArrayList<>();
     ContentResolver contentResolver;
     Uri imgUri;
@@ -89,6 +91,9 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setTitle("Create Profile");
         Intent in = getIntent();
+        if (checkLanguage()){
+            getSupportActionBar().setTitle("प्रोफ़ाइल बनाये");
+        }
         checkPermission();
         code = in.getIntExtra("code", 0);
         setContentView(binding.getRoot());
@@ -107,6 +112,14 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
         if (code == 2) {
             SharedPreferences mPrefs = getSharedPreferences("Transporter", MODE_PRIVATE);
             getSupportActionBar().setTitle("Update Profile");
+            binding.create.setText("update");
+            if (checkLanguage()){
+                getSupportActionBar().setTitle("प्रोफ़ाइल अपडेट करें");
+                binding.pd.setText("लंबित");
+                binding.cp.setText("पूरा किया हुआ");
+                binding.tt.setText("कुल");
+                binding.create.setText("अपडेट करें");
+            }
             String json = mPrefs.getString("Transporter", "");
             Gson gson = new Gson();
             String completed = mPrefs.getString("completed", "0");
@@ -159,7 +172,6 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
             binding.aadhar.setText(transporter.getAadharCardNumber());
             binding.phone.setText(transporter.getContactNumber());
             imgUrl = transporter.getImage();
-            binding.create.setText("update");
         }
         if (code != 2) {
             final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type, android.R.layout.simple_spinner_item);
@@ -238,7 +250,11 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
                     TransporterService.TransporterApi transporterApi = TransporterService.getTransporterApiInstance();
                     Call<Transporter> call = transporterApi.createTransporter(body, typ, etname, pho, add, gs, rat, tok, adh, id);
                     if (NetworkUtil.getConnectivityStatus(CreateProfile.this)) {
-                        final CustomProgressDialog pd = new CustomProgressDialog(CreateProfile.this, "Please Wait...");
+                        String s="Please wait...";
+                        if (checkLanguage()){
+                            s="कृपया प्रतीक्षा करें...";
+                        }
+                        final CustomProgressDialog pd=new CustomProgressDialog(CreateProfile.this,s);
                         pd.show();
                         call.enqueue(new Callback<Transporter>() {
                             @Override
@@ -276,7 +292,11 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
                     TransporterService.TransporterApi transporterApi = TransporterService.getTransporterApiInstance();
                     Call<Transporter> call = transporterApi.updateTransporter(transporter);
                     if (NetworkUtil.getConnectivityStatus(CreateProfile.this)) {
-                        final CustomProgressDialog pd = new CustomProgressDialog(CreateProfile.this, "Please wait...");
+                        String s="Please wait...";
+                        if (checkLanguage()){
+                            s="कृपया प्रतीक्षा करें...";
+                        }
+                        final CustomProgressDialog pd=new CustomProgressDialog(CreateProfile.this,s);
                         pd.show();
                         call.enqueue(new Callback<Transporter>() {
                             @Override
@@ -339,7 +359,11 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
                 MultipartBody.Part body =
                         MultipartBody.Part.createFormData("file", file.getName(), requestFile);
                 Call<Transporter> cal = transporterApi.updateImage(id, body);
-                final CustomProgressDialog pd = new CustomProgressDialog(CreateProfile.this, "Please wait...");
+                String s="Please wait...";
+                if (checkLanguage()){
+                    s="कृपया प्रतीक्षा करें...";
+                }
+                final CustomProgressDialog pd=new CustomProgressDialog(CreateProfile.this,s);
                 pd.show();
                 cal.enqueue(new Callback<Transporter>() {
                     @Override
@@ -399,6 +423,18 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
     protected void onStart() {
         super.onStart();
         Location location = new Location("abcd");
+        if (code!=2){
+            if (ActivityCompat.checkSelfPermission(CreateProfile.this, READ_PHONE_NUMBERS) ==
+                    PermissionChecker.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CreateProfile.this,
+                    READ_PHONE_STATE) == PermissionChecker.PERMISSION_GRANTED) {
+                TelephonyManager manager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                phone = manager.getLine1Number();
+            } else {
+                ActivityCompat.requestPermissions(CreateProfile.this, new String[]{READ_PHONE_NUMBERS, READ_PHONE_STATE}, 100);
+                TelephonyManager manager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                phone = manager.getLine1Number();
+            }
+        }
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PermissionChecker.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -456,18 +492,8 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
             binding.phone.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (ActivityCompat.checkSelfPermission(CreateProfile.this, READ_PHONE_NUMBERS) ==
-                            PermissionChecker.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CreateProfile.this,
-                            READ_PHONE_STATE) == PermissionChecker.PERMISSION_GRANTED) {
-                        TelephonyManager manager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-                        String phone = manager.getLine1Number();
-                        binding.phone.setText(phone);
-                    } else {
-                        ActivityCompat.requestPermissions(CreateProfile.this, new String[]{READ_PHONE_NUMBERS, READ_PHONE_STATE}, 100);
-                        TelephonyManager manager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-                        String n = manager.getLine1Number();
-                    }
-                    return true;
+                    binding.phone.setText(phone);
+                    return false;
                 }
             });
         }
@@ -514,9 +540,11 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
         try {
             addresses = gcd.getFromLocation(loc.getLatitude(), loc
                     .getLongitude(), 1);
-            if (addresses.size() > 0)
+            if (addresses.size() > 0) {
                 System.out.println(addresses.get(0).getLocality());
-            cityName = addresses.get(0).getLocality();
+                cityName = addresses.get(0).getLocality();
+                binding.address.setText(addresses.get(0).getAddressLine(0));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -539,6 +567,14 @@ public class CreateProfile extends AppCompatActivity implements AdapterView.OnIt
     public void onStatusChanged(String provider,
                                 int status, Bundle extras) {
         // TODO Auto-generated method stub
+    }
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
     }
 }
 
