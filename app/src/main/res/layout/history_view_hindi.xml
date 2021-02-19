@@ -30,8 +30,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.18"
-                    android:text="Location:" />
+                    android:layout_weight="0.13"
+                    android:text="स्थान:" />
 
                 <TextView
                     android:id="@+id/location"
@@ -65,13 +65,13 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.28"
-                            android:text="Material:" />
+                            android:layout_weight="0.2"
+                            android:text="सामग्री:" />
 
                         <TextView
                             android:id="@+id/material"
                             android:layout_width="0dp"
-                            android:layout_weight="0.7"
+                            android:layout_weight="0.8"
                             android:layout_height="wrap_content"
                             android:text="Steel"
                             android:textColor="@color/black"
@@ -87,8 +87,8 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.28"
-                            android:text="Weight:" />
+                            android:layout_weight="0.2"
+                            android:text="वजन:" />
 
                         <TextView
                             android:id="@+id/weight"
@@ -126,8 +126,8 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.25"
-                        android:text="Amount:"
+                        android:layout_weight="0.18"
+                        android:text="रकम:"
 
                         />
 

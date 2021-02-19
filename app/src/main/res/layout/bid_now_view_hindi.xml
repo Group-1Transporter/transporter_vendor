@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
+    -
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -15,7 +19,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:titleTextColor="@color/white"></androidx.appcompat.widget.Toolbar>
+            app:titleTextColor="@color/white" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
@@ -25,26 +30,38 @@
         android:layout_below="@id/appbar"
         android:layout_marginLeft="20dp"
         android:padding="10dp"
-        android:text="Lead Details"
+        android:text="लीड विवरण"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+
+    -
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/txt">
 
+
+        -
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+
+            -
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="10dp">
+
+
+                -
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -56,11 +73,17 @@
                     app:cardElevation="10dp"
                     app:cardUseCompatPadding="true">
 
+
+                    -
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:orientation="vertical">
+
+
+                        -
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -79,15 +102,18 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="28dp"
-                                android:singleLine="true"
                                 android:gravity="center_horizontal"
-                                android:text="indore to bhopal"
+                                android:singleLine="true"
+                                android:text="इंदोर टू भोपाल"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
 
                         </RelativeLayout>
+
+
+                        -
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -101,7 +127,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
                                 android:padding="3dp"
-                                android:text="Material:"
+                                android:text="मटेरियल:"
                                 android:textSize="14sp" />
 
                             <TextView
@@ -110,10 +136,14 @@
                                 android:layout_height="wrap_content"
                                 android:layout_toRightOf="@+id/m"
                                 android:padding="3dp"
-                                android:text="Steel"
+                                android:text="steel"
                                 android:textColor="@color/black"
                                 android:textSize="15sp" />
+
                         </RelativeLayout>
+
+
+                        -
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -125,18 +155,22 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="3dp"
-                                android:text="Weight:" />
+                                android:text="वजन:" />
 
                             <TextView
+                                android:id="@+id/tvweight"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_toRightOf="@id/w"
                                 android:padding="3dp"
                                 android:text="2 ton"
-                                android:id="@+id/tvweight"
                                 android:textColor="@color/black"
                                 android:textSize="15sp" />
+
                         </RelativeLayout>
+
+
+                        -
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -148,23 +182,25 @@
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.21"
+                                android:layout_weight="0.3"
                                 android:padding="3dp"
-                                android:text="Posted By:" />
+                                android:text="के द्वारा डाला गया:" />
 
                             <TextView
                                 android:id="@+id/username"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:padding="3dp"
                                 android:layout_weight="0.7"
-                                android:text="Username"
+                                android:padding="3dp"
                                 android:singleLine="true"
+                                android:text="Username"
                                 android:textColor="@color/black"
                                 android:textSize="15sp" />
 
-
                         </LinearLayout>
+
+
+                        -
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -177,8 +213,8 @@
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.48"
-                                android:text="Date of completion:" />
+                                android:layout_weight="0.3"
+                                android:text="अंतिम  दिनांक:" />
 
                             <TextView
                                 android:id="@+id/lastdate"
@@ -187,7 +223,11 @@
                                 android:text="19-nov-2020"
                                 android:textColor="@color/black"
                                 android:textSize="15sp" />
+
                         </LinearLayout>
+
+
+                        -
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -197,217 +237,262 @@
                             android:padding="3dp"
                             android:weightSum="1">
 
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.3"
-                                android:text="Pickup Contact:" />
-
-                            <TextView
-                                android:id="@+id/pickcontact"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.7"
-                                android:layout_height="wrap_content"
-                                android:text="Pickup Contact:"
-                                android:singleLine="true"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginLeft="10dp"
-                            android:padding="3dp"
-                            android:weightSum="1">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.3"
-                                android:text="Pickup Address:" />
-                            <TextView
-                                android:id="@+id/pickadd"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.7"
-                                android:layout_height="wrap_content"
-                                android:text="Pickup Address: "
-                                android:singleLine="true"
-                                android:layout_marginRight="10dp"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="horizontal"
-                            android:padding="3dp"
-                            android:weightSum="1">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.32"
-                                android:text="Delivery Contact:" />
-
-                            <TextView
-                                android:id="@+id/delcontact"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.7"
-                                android:singleLine="true"
-                                android:layout_height="wrap_content"
-                                android:text="Delivery Contact:"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginLeft="10dp"
-                            android:padding="3dp"
-                            android:weightSum="1">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.33"
-                                android:text="Delivery Address:" />
-                            <TextView
-                                android:id="@+id/deladd"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.7"
-                                android:singleLine="true"
-                                android:layout_height="wrap_content"
-                                android:text="Delivery Address: "
-                                android:textColor="@color/black"
-                                android:layout_marginRight="10dp"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/grey"
-                            android:id="@+id/line"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginLeft="13dp"
-                            android:layout_marginRight="10dp"
-                            android:visibility="gone"
-                            />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="3dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:text="Handle with Care"
-                            android:id="@+id/hwc"
-                            android:visibility="gone"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:drawablePadding="4dp"
-                            android:drawableLeft="@drawable/special"
-                            />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginLeft="10dp"
-                            android:padding="3dp"
-                            android:visibility="gone"
-                            android:id="@+id/mt"
-                            android:weightSum="1">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.37"
-                                android:text="Additional Material:" />
-                            <TextView
-                                android:id="@+id/material2"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.63"
-                                android:singleLine="true"
-                                android:layout_height="wrap_content"
-                                android:text="Delivery Address: "
-                                android:textColor="@color/black"
-                                android:layout_marginRight="10dp"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginLeft="10dp"
-                            android:padding="3dp"
-                            android:visibility="gone"
-                            android:id="@+id/pc"
-                            android:weightSum="1">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.27"
-                                android:text="Pickup Street:" />
-                            <TextView
-                                android:id="@+id/pick"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.73"
-                                android:singleLine="true"
-                                android:layout_height="wrap_content"
-                                android:text="Delivery Address: "
-                                android:textColor="@color/black"
-                                android:layout_marginRight="10dp"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginLeft="10dp"
-                            android:visibility="gone"
-                            android:id="@+id/dv"
-                            android:padding="3dp"
-                            android:weightSum="1">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.29"
-                                android:text="Delivery Street:" />
-                            <TextView
-                                android:id="@+id/delivery"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.7"
-                                android:singleLine="true"
-                                android:layout_height="wrap_content"
-                                android:text="Delivery Address: "
-                                android:textColor="@color/black"
-                                android:layout_marginRight="10dp"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginLeft="10dp"
-                            android:padding="3dp"
-                            android:id="@+id/rm"
-                            android:visibility="gone"
-                            android:weightSum="1">
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.18"
-                                android:text="Remarks:" />
+                                android:text="पिक संपर्क:" />
+
+                            <TextView
+                                android:id="@+id/pickcontact"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.7"
+                                android:singleLine="true"
+                                android:text="Pickup Contact:"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+
+                        -
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="माल उठाने क पता:" />
+
+                            <TextView
+                                android:id="@+id/pickadd"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="0.7"
+                                android:singleLine="true"
+                                android:text="Pickup Address: "
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+
+                        -
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.33"
+                                android:text="माल भेजने का संपर्क:" />
+
+                            <TextView
+                                android:id="@+id/delcontact"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.64"
+                                android:singleLine="true"
+                                android:text="Delivery Contact:"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+
+                        -
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.22"
+                                android:text="डीलेवरी पता:" />
+
+                            <TextView
+                                android:id="@+id/deladd"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="0.7"
+                                android:singleLine="true"
+                                android:text="Delivery Address: "
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/line"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@color/grey"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/hwc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:drawableLeft="@drawable/special"
+                            android:drawablePadding="4dp"
+                            android:padding="3dp"
+                            android:text="हैंडल विथ केयर "
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+
+
+                        -
+
+                        <LinearLayout
+                            android:id="@+id/mt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.27"
+                                android:text="अतिरिक्त सामान:" />
+
+                            <TextView
+                                android:id="@+id/material2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="0.7"
+                                android:singleLine="true"
+                                android:text="डिलिवरी का पता: "
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+
+                        -
+
+                        <LinearLayout
+                            android:id="@+id/pc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.23"
+                                android:text="पिकअप स्ट्रीट:" />
+
+                            <TextView
+                                android:id="@+id/pick"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="0.73"
+                                android:singleLine="true"
+                                android:text="डीलेवरी पता:"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+
+                        -
+
+                        <LinearLayout
+                            android:id="@+id/dv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.23"
+                                android:text="वितरण सड़क:" />
+
+                            <TextView
+                                android:id="@+id/delivery"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="0.7"
+                                android:singleLine="true"
+                                android:text="डीलेवरी पता:"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+
+                        -
+
+                        <LinearLayout
+                            android:id="@+id/rm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.17"
+                                android:text="टिप्पणियाँ:" />
+
                             <TextView
                                 android:id="@+id/remark"
                                 android:layout_width="0dp"
-                                android:layout_weight="0.7"
                                 android:layout_height="wrap_content"
-                                android:text="Delivery Address: "
-                                android:textColor="@color/black"
                                 android:layout_marginRight="10dp"
+                                android:layout_weight="0.7"
+                                android:text="डीलेवरी पता:"
+                                android:textColor="@color/black"
                                 android:textSize="15sp" />
+
                         </LinearLayout>
 
                         <TextView
@@ -417,11 +502,17 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:gravity="end"
-                            android:text="Read more..."
+                            android:text="अधिक पढ़ें..."
                             android:textColor="@color/colorPrimary" />
+
                     </LinearLayout>
+
                 </androidx.cardview.widget.CardView>
+
             </LinearLayout>
+
+
+            -
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -436,6 +527,9 @@
                 app:cardElevation="10dp"
                 app:cardUseCompatPadding="true">
 
+
+                -
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -446,11 +540,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="Send Response to Username"
+                        android:text="उपयोगकर्ता नाम पर प्रतिक्रिया भेजें"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
+
+                    -
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -464,7 +561,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
                             android:layout_weight="0.36"
-                            android:text="Enter your rate: "
+                            android:text="अपना रेट दर्ज करें: "
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -479,6 +576,7 @@
                             android:maxLength="6"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
+
                     </LinearLayout>
 
                     <TextView
@@ -500,7 +598,7 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginRight="20dp"
                         android:background="@drawable/background_currentload"
-                        android:hint="Remarks"
+                        android:hint="टिप्पणियाँ"
                         android:lines="3"
                         android:padding="8dp" />
 
@@ -512,12 +610,16 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/background_btn_all_bid"
-                        android:text="Bid Now"
+                        android:text="अभी बोली लगाएँ"
                         android:textAllCaps="false"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
+
         </LinearLayout>
+
     </ScrollView>
+
 </RelativeLayout>

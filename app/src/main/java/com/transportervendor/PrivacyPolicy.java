@@ -15,5 +15,7 @@ public class PrivacyPolicy extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding=PrivacyPolicyBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

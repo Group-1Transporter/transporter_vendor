@@ -1,11 +1,14 @@
 package com.transportervendor;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,13 +38,17 @@ import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
     TabAccessorAdapter adapter;
+    View view;
+    ActivityHomeBinding homeBinding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ActivityHomeBinding homeBinding=ActivityHomeBinding.inflate(LayoutInflater.from(HomeActivity.this));
+        homeBinding =ActivityHomeBinding.inflate(LayoutInflater.from(HomeActivity.this));
         setContentView(homeBinding.getRoot());
         setSupportActionBar(homeBinding.toolbar);
-        adapter=new TabAccessorAdapter(getSupportFragmentManager(),1);
+        getSupportActionBar().setTitle("Home");
+
+        adapter=new TabAccessorAdapter(getSupportFragmentManager(),1, getSharedPreferences("Transporter", Context.MODE_PRIVATE));
         homeBinding.drawicon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +70,11 @@ public class HomeActivity extends AppCompatActivity {
             String user=FirebaseAuth.getInstance().getCurrentUser().getUid();
             TransporterService.TransporterApi transporterApi=TransporterService.getTransporterApiInstance();
             Call<Transporter>call=transporterApi.getTransporter(user);
-            final CustomProgressDialog pd=new CustomProgressDialog(HomeActivity.this,"Please wait...");
+            String s="Please wait...";
+            if (checkLanguage()){
+                s="कृपया प्रतीक्षा करें...";
+            }
+            final CustomProgressDialog pd=new CustomProgressDialog(HomeActivity.this,s);
             pd.show();
             call.enqueue(new Callback<Transporter>() {
                 @Override
@@ -97,7 +108,11 @@ public class HomeActivity extends AppCompatActivity {
                 transporter.setToken(token);
                 TransporterService.TransporterApi transporterApi=TransporterService.getTransporterApiInstance();
                 Call<Transporter>call=transporterApi.updateTransporter(transporter);
-                final CustomProgressDialog pd=new CustomProgressDialog(HomeActivity.this,"Please wait...");
+                String s="Please wait...";
+                if (checkLanguage()){
+                    s="कृपया प्रतीक्षा करें...";
+                }
+                final CustomProgressDialog pd=new CustomProgressDialog(HomeActivity.this,s);
                 pd.show();
                 call.enqueue(new Callback<Transporter>() {
                     @Override
@@ -123,7 +138,7 @@ public class HomeActivity extends AppCompatActivity {
                 });
             }
         }
-        View view=homeBinding.navigationView.inflateHeaderView(R.layout.header_drawer);
+        view=homeBinding.navigationView.inflateHeaderView(R.layout.header_drawer);
         ImageView iv=view.findViewById(R.id.btnback);
         ImageView civ=view.findViewById(R.id.logo);
         TextView name=view.findViewById(R.id.name);
@@ -186,8 +201,53 @@ public class HomeActivity extends AppCompatActivity {
                     prefsEditor.commit();
                     finish();
                 }
+                else if (id==R.id.hindi){
+                    SharedPreferences shared = getSharedPreferences("Transporter", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor prefsEditor = shared.edit();
+                    prefsEditor.putString("language","hindi");
+                    prefsEditor.commit();
+                    Toast.makeText(HomeActivity.this, "परिवर्तनों को देखने के लिए कृपया एप्लिकेशन पुनः आरंभ करें।", Toast.LENGTH_SHORT).show();
+                    triggerRebirth(HomeActivity.this);
+                }
+                else if (id==R.id.english){
+                    SharedPreferences shared = getSharedPreferences("Transporter", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor prefsEditor = shared.edit();
+                    prefsEditor.putString("language","english");
+                    prefsEditor.commit();
+                    Toast.makeText(HomeActivity.this, "Please restart the application to see changes.", Toast.LENGTH_SHORT).show();
+                    triggerRebirth(HomeActivity.this);
+                }
                 return true;
             }
         });
+        if (checkLanguage()){
+            getSupportActionBar().setTitle("होम");
+            homeBinding.navigationView.inflateMenu(R.menu.menu_hindi);
+            ((TextView)view.findViewById(R.id.menu)).setText("मेन्यू");
+        }else{
+            homeBinding.navigationView.inflateMenu(R.menu.navigation_menu_item);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
+    }
+    public static void triggerRebirth(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        context.startActivity(mainIntent);
+        Runtime.getRuntime().exit(0);
     }
 }

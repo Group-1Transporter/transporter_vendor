@@ -1,5 +1,6 @@
 package com.transportervendor.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.transportervendor.CustomProgressDialog;
+import com.transportervendor.HomeActivity;
 import com.transportervendor.NetworkUtil;
 import com.transportervendor.adapter.AllBidsAdapter;
 import com.transportervendor.apis.BidService;
@@ -36,7 +38,11 @@ public class AllBidsFragment extends Fragment {
         BidService.BidApi bidApi = BidService.getBidApiInstance();
         Call<ArrayList<BidWithLead>> call = bidApi.getAllBids(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(NetworkUtil.getConnectivityStatus(getContext())) {
-            final CustomProgressDialog pd=new CustomProgressDialog(getContext(),"Please wait...");
+            String s="Please wait...";
+            if (checkLanguage()){
+                s="कृपया प्रतीक्षा करें...";
+            }
+            final CustomProgressDialog pd=new CustomProgressDialog(getContext(),s);
             pd.show();
             call.enqueue(new Callback<ArrayList<BidWithLead>>() {
                 @Override
@@ -61,5 +67,13 @@ public class AllBidsFragment extends Fragment {
             Toast.makeText(getContext(), "please enable internet connection.", Toast.LENGTH_SHORT).show();
         }
         return fragment.getRoot();
+    }
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getActivity().getSharedPreferences("Transporter",getActivity().MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
     }
 }

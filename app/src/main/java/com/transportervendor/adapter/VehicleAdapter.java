@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.transportervendor.CustomProgressDialog;
 import com.transportervendor.EditVehicle;
+import com.transportervendor.HomeActivity;
 import com.transportervendor.ManageVehicle;
 import com.transportervendor.NetworkUtil;
 import com.transportervendor.apis.VehicleService;
@@ -33,6 +34,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.ManageVehicleViewHolder> {
     Context context;
     ArrayList<Vehicle>al;
@@ -42,15 +45,23 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.ManageVe
         this.al = al;
     }
 
+
     @NonNull
     @Override
     public ManageVehicleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         VehicleViewBinding binding=VehicleViewBinding.inflate(LayoutInflater.from(context));
         return new ManageVehicleViewHolder(binding);
     }
-
+    private boolean checkLanguage() {
+        SharedPreferences mprefs =context.getSharedPreferences("Transporter",MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
+    }
     @Override
-    public void onBindViewHolder(@NonNull final ManageVehicleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ManageVehicleViewHolder holder, final int position) {
         final Vehicle vehicle=al.get(position);
         holder.binding.count.setText("   "+vehicle.getCount());
         holder.binding.name.setText(vehicle.getName());
@@ -60,21 +71,30 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.ManageVe
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(context, holder.binding.more);
                 Menu menu=popup.getMenu();
-                menu.add("Edit");
-                menu.add("Delete");
+                if (checkLanguage()){
+                    menu.add("संपादित करें");
+                    menu.add("डिलीट");
+                }else {
+                    menu.add("Edit");
+                    menu.add("Delete");
+                }
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         String title=item.getTitle().toString();
-                        if(title.equalsIgnoreCase("Edit")){
+                        if(title.equalsIgnoreCase("Edit") || title.equalsIgnoreCase("संपादित करें")){
                             Intent in=new Intent(context, EditVehicle.class);
                             in.putExtra("vehicle",vehicle);
                             context.startActivity(in);
-                        }else if (title.equalsIgnoreCase("Delete")){
+                        }else if (title.equalsIgnoreCase("Delete") || title.equalsIgnoreCase("डिलीट")){
                             if(NetworkUtil.getConnectivityStatus(context)){
                                 VehicleService.VehicleApi vehicleApi=VehicleService.getVehicleApiInstance();
                                 Call<Transporter>call=vehicleApi.deleteVehicle(vehicle.getVehicleId(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                final CustomProgressDialog pd=new CustomProgressDialog(context,"Please wait...");
+                                String s="Please wait...";
+                                if (checkLanguage()){
+                                    s="कृपया प्रतीक्षा करें...";
+                                }
+                                final CustomProgressDialog pd=new CustomProgressDialog(context,s);
                                 pd.show();
                                 call.enqueue(new Callback<Transporter>() {
                                     @Override
@@ -88,6 +108,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.ManageVe
                                             prefsEditor.putString("Transporter", json);
                                             prefsEditor.commit();
                                             Toast.makeText(context, "vehicle deleted.", Toast.LENGTH_SHORT).show();
+                                            al.remove(position);
                                             notifyDataSetChanged();
                                         }else{
                                             Gson gson = new Gson();

@@ -1,5 +1,6 @@
 package com.transportervendor.apis;
 
+import com.transportervendor.beans.Rating;
 import com.transportervendor.beans.Transporter;
 
 import java.util.ArrayList;
@@ -60,5 +61,7 @@ public class TransporterService {
         public Call<Transporter> updateImage(@Part("transporterId") RequestBody transporterId,
                                             @Part MultipartBody.Part file
                                             );
+        @GET("/transporter/rating/{transporterId}")
+        public Call<ArrayList<Rating>> getRating(@Path("transporterId") String transporterId);
     }
 }

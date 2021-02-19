@@ -24,6 +24,7 @@
                 android:layout_weight="0.8"
                 android:padding="8dp"
                 android:text="All"
+                android:id="@+id/al"
                 android:textColor="@color/colorPrimary"
                 android:textColorHint="@color/colorPrimary" />
 
@@ -66,7 +67,7 @@
             android:layout_height="35dp"
             android:layout_marginLeft="40dp"
             android:background="@drawable/background_btn_bid"
-            android:text="Update"
+            android:text="Filter"
             android:textColor="@color/white" />
     </LinearLayout>
 </RelativeLayout>

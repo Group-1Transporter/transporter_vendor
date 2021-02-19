@@ -1,5 +1,6 @@
 package com.transportervendor.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +23,19 @@ public class HistoryFragment extends Fragment {
     FragmentHistoryBinding fragment;
     RecyclerView.Adapter<CompletedLeadsAdapter.CompletedLeadsViewHolder> adapter;
     RecyclerView.Adapter<AllBidsAdapter.AllBidsViewHolder> adapter1;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragment = FragmentHistoryBinding.inflate(LayoutInflater.from(getContext()));
         View v = fragment.getRoot();
-        fragment.tablayout.addTab(fragment.tablayout.newTab().setText("Completed Leads"),0,true);
-        fragment.tablayout.addTab(fragment.tablayout.newTab().setText("All Bids"),1,false);
+        if (checkLanguage()){
+            fragment.tablayout.addTab(fragment.tablayout.newTab().setText("पूर्ण भार"),0,true);
+            fragment.tablayout.addTab(fragment.tablayout.newTab().setText("सभी बोलियां"),1,false);
+        }else{
+            fragment.tablayout.addTab(fragment.tablayout.newTab().setText("Completed Leads"),0,true);
+            fragment.tablayout.addTab(fragment.tablayout.newTab().setText("All Bids"),1,false);
+        }
         fragment.tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -72,4 +79,13 @@ public class HistoryFragment extends Fragment {
     public void onStart() {
         super.onStart();
     }
+    public  boolean checkLanguage() {
+        SharedPreferences mprefs =getActivity().getSharedPreferences("Transporter",getActivity().MODE_PRIVATE);
+        String s=mprefs.getString("language","");
+        if (s.equalsIgnoreCase("hindi")){
+            return true;
+        }
+        return false;
+    }
+
 }
